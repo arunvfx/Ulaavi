@@ -1,5 +1,5 @@
 # Ulaavi
-Ulaavi for nuke, helps to keep our stocl elements organised.
+Ulaavi for nuke, helps to keep our stock elements organised.
 
 # Installation
 Downlaod ffmpeg from ffmpeg.org<br>
