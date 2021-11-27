@@ -248,7 +248,6 @@ class TableContent(QTableWidget):
         self.setRowCount(self.rows)
         pos = [(i, j) for i in range(int(self.rows)) for j in range(int(self.cols))]
         count = 1
-        self.progress_bar.show()
         try:
             if not self.cell_position_updated:
                 cell_position = pos[pos.index(self.last_cell): len(file) + pos.index(self.last_cell)]
@@ -289,7 +288,6 @@ class TableContent(QTableWidget):
                     count += 1
             self.cell_position_updated = True
             self.last_cell = last_cell_position
-            self.progress_bar.hide()
         except ValueError:
             self.status_label('0, No Items found in database!')
         except Exception as e:
@@ -298,6 +296,10 @@ class TableContent(QTableWidget):
     def load_progress(self, count, total):
         progress = int((float(count) / total) * 100)
         self.progress_bar.setValue(progress)
+        if not progress % 100:
+            self.progress_bar.setVisible(False)
+        else:
+            self.progress_bar.setVisible(True)
 
     def load_items_to_cell(self, cell_position, file):
         """
@@ -355,13 +357,9 @@ class TableContent(QTableWidget):
         initiate gif conversion
         """
         thread_run = ConvertGif(item, output, pos, frame_length, self.ffmpeg)
-        # thread_run.conversion_signals.thread_started.connect(self.thread_running)
         thread_run.conversion_signals.thread_finished.connect(self.thread_finished)
         self.thread_pool.start(thread_run)
         self.thread_pool.setMaxThreadCount(int(self.settings['threads']))
-
-    # def thread_running(self, data):
-    #     print(data)
 
     def thread_finished(self, item):
         """
@@ -712,7 +710,6 @@ class ConvertGif(QRunnable):
         self.pos = pos
 
     def run(self):
-        # self.conversion_signals.thread_started.emit('Conversion Started!')
         try:
             if os.path.isfile(self.output):
                 os.remove(self.output)
