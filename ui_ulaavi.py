@@ -238,10 +238,6 @@ class Ui_Ulaavi(object):
         self.horizontalLayout_6 = QHBoxLayout(self.frame_footer)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(-1, 0, -1, 3)
-        self.label_status_progress = QLabel(self.frame_footer)
-        self.label_status_progress.setObjectName("label_status_progress")
-
-        self.horizontalLayout_6.addWidget(self.label_status_progress)
 
         self.progress_bar = QProgressBar(self.frame_footer)
         self.progress_bar.setMinimumSize(120, 20)

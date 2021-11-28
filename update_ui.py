@@ -624,6 +624,8 @@ class UpdateUI:
                 self.template.comboBox_category.addItem(k)
             else:
                 continue
+        if self.ui.tree_category.currentItem().parent().text(0) == 'root':
+            self.template.comboBox_category.setCurrentText(self.ui.tree_category.currentItem().text(0))
 
     def load_subcategory_template_ui(self, db, count=None):
         """
@@ -639,6 +641,9 @@ class UpdateUI:
                 self.template.comboBox_sub_category.addItem(k)
             else:
                 continue
+        if self.ui.tree_category.currentItem().parent().parent().text(0) == 'root':
+            self.template.comboBox_category.setCurrentText(self.ui.tree_category.currentItem().parent().text(0))
+            self.template.comboBox_sub_category.setCurrentText(self.ui.tree_category.currentItem().text(0))
 
     def swap_template(self, current_wid, db):
         """

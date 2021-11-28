@@ -284,7 +284,7 @@ class TableContent(QTableWidget):
                     self.setItem(position[0], position[1], widget_item)
                     self.setCellWidget(position[0], position[1], self.thumb)
                     last_cell_position = (position[0], position[1])
-                    self.load_progress(count, self.total_file)
+                    # self.load_progress(count, self.total_file)
                     count += 1
             self.cell_position_updated = True
             self.last_cell = last_cell_position
