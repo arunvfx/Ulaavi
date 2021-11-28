@@ -225,9 +225,8 @@ class TableContent(QTableWidget):
                     yield str(key), str(value), current_category, str(k)
 
     def calc_row_col_pos(self, file):
-        self.total_file = len(file)
+        self.total_file += len(file)
         self.status_label(self.total_file)
-
         self.rows = math.ceil(self.total_file / self.cols)
         self.setRowCount(self.rows)
         return [(i, j) for i in range(int(self.rows)) for j in range(int(self.cols))]
@@ -278,7 +277,6 @@ class TableContent(QTableWidget):
             print(e)
 
     def add_widget_to_cell(self, position, thumbnail, file):
-        print(file)
         self.setColumnWidth(position[1], self.thumb_width)
         self.setRowHeight(position[0], self.thumb_height)
         widget_item = QTableWidgetItem()

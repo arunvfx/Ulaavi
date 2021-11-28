@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#  Created by Arun Subramaniyam
-#  Ebro Elements is a tool to organise assets for VFX.
-
 
 from PySide2.QtWidgets import QWidget, QApplication
 from PySide2.QtCore import Qt, QEvent
@@ -108,11 +105,4 @@ def set_widget_margins_to_zero(widget_object):
 def main():
     main.e = Ulaavi()
     main.e.show()
-
-
-if __name__ == '__main__':
-    app = QApplication([])
-    e = Ulaavi()
-    e.show()
-    app.exec_()
 

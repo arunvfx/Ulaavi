@@ -3,7 +3,7 @@ from main import *
 from nukescripts import panels
 
 
-menu = nuke.menu('Nuke').addMenu('Arun')
+menu = nuke.menu('Nuke').addMenu('thEdge')
 menu.addCommand('Ulaavi', 'main()')
 
 
