@@ -142,10 +142,9 @@ class UpdateUI:
         if ffmpeg path mapped ; else: call warning popup to map ffmpeg
         """
         # delete thumbnail widget if already exists
-        try:
-            self.table.deleteLater()
-        except Exception:
-            pass
+        for widget in QApplication.allWidgets():
+            if type(widget).__name__ == 'TableContent':
+                widget.deleteLater()
 
         # if create thumbnail widget and load items once child is selected in  a tree
         if self.ui.tree_category.currentItem():
@@ -165,8 +164,11 @@ class UpdateUI:
                                               self.ui.info_text,
                                               self.ui.btn_info_global.isChecked())
                     self.ui.horizontalLayout_4.addWidget(self.table)
-                except Exception:
+                except OSError:
                     self.ffmpeg_warning()
+                except Exception as e:
+                    print(e)
+
 
     def load_thumbnail(self):
         """
@@ -342,9 +344,9 @@ class UpdateUI:
         """
         Popup warning/confirmation:  to remove a group/category
         """
-        for panel in QApplication.allWidgets():
-            if panel.objectName() == "Remove Group":
-                panel.close()
+        for widget in QApplication.allWidgets():
+            if widget.objectName() == "Remove Group":
+                widget.close()
         dialog = QDialog(self.ui)
         dialog.setObjectName('Remove Group')
         dialog.setStyleSheet('QDialog {background-color:  #323232;} '
@@ -568,7 +570,11 @@ class UpdateUI:
         self.warning_popup('FFMPEG not found! Enter valid path for FFMPEG.')
 
     def warning_popup(self, text):
+        for widget in QApplication.allWidgets():
+            if widget.objectName() == "ffmpeg_warning":
+                widget.close()
         dialog = QDialog(self.ui)
+        dialog.setObjectName('ffmpeg_warning')
         dialog.setStyleSheet('QDialog {background-color:  #323232;} '
                              'QLabel{border-radius: 5px; background-color:  #232323;} ')
         dialog.setFixedSize(350, 100)
@@ -624,8 +630,11 @@ class UpdateUI:
                 self.template.comboBox_category.addItem(k)
             else:
                 continue
-        if self.ui.tree_category.currentItem().parent().text(0) == 'root':
-            self.template.comboBox_category.setCurrentText(self.ui.tree_category.currentItem().text(0))
+        try:
+            if self.ui.tree_category.currentItem().parent().text(0) == 'root':
+                self.template.comboBox_category.setCurrentText(self.ui.tree_category.currentItem().text(0))
+        except Exception:
+            pass
 
     def load_subcategory_template_ui(self, db, count=None):
         """
@@ -641,9 +650,12 @@ class UpdateUI:
                 self.template.comboBox_sub_category.addItem(k)
             else:
                 continue
-        if self.ui.tree_category.currentItem().parent().parent().text(0) == 'root':
-            self.template.comboBox_category.setCurrentText(self.ui.tree_category.currentItem().parent().text(0))
-            self.template.comboBox_sub_category.setCurrentText(self.ui.tree_category.currentItem().text(0))
+        try:
+            if self.ui.tree_category.currentItem().parent().parent().text(0) == 'root':
+                self.template.comboBox_category.setCurrentText(self.ui.tree_category.currentItem().parent().text(0))
+                self.template.comboBox_sub_category.setCurrentText(self.ui.tree_category.currentItem().text(0))
+        except Exception:
+            pass
 
     def swap_template(self, current_wid, db):
         """

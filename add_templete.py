@@ -8,16 +8,16 @@ from PySide2.QtCore import QSize, Qt, QCoreApplication
 class Ui_Add_Script(QWidget):
     def __init__(self):
         super(Ui_Add_Script, self).__init__()
-        self.resize(600, 300)
-        self.setMinimumSize(QSize(600, 300))
-        self.setMaximumSize(QSize(600, 300))
+        self.resize(500, 200)
+        self.setMinimumSize(QSize(500, 200))
+        self.setMaximumSize(QSize(500, 200))
         self.verticalLayout = QVBoxLayout(self)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, -1, 0)
         self.frame = QFrame(self)
         self.frame.setObjectName("frame")
-        self.frame.setMaximumSize(QSize(16777215, 260))
+        self.frame.setMaximumSize(QSize(16777215, 200))
         self.frame.setFrameShape(QFrame.NoFrame)
         self.frame.setFrameShadow(QFrame.Plain)
         self.horizontalLayout = QHBoxLayout(self.frame)
@@ -26,8 +26,8 @@ class Ui_Add_Script(QWidget):
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.frame_thumb = QFrame(self.frame)
         self.frame_thumb.setObjectName("frame_thumb")
-        self.frame_thumb.setMinimumSize(QSize(250, 0))
-        self.frame_thumb.setMaximumSize(QSize(250, 180))
+        self.frame_thumb.setMinimumSize(QSize(150, 0))
+        self.frame_thumb.setMaximumSize(QSize(150, 150))
         self.frame_thumb.setFrameShape(QFrame.NoFrame)
         self.frame_thumb.setFrameShadow(QFrame.Plain)
         self.horizontalLayout_2 = QHBoxLayout(self.frame_thumb)
@@ -53,7 +53,7 @@ class Ui_Add_Script(QWidget):
         self.comboBox_group = QComboBox(self.frame_category)
         self.comboBox_group.setObjectName("comboBox_group")
         self.comboBox_group.setMaximumSize(QSize(16777215, 25))
-        self.comboBox_group.setMinimumSize(QSize(260, 25))
+        self.comboBox_group.setMinimumSize(QSize(240, 25))
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.comboBox_group)
 
@@ -65,7 +65,7 @@ class Ui_Add_Script(QWidget):
         self.comboBox_category = QComboBox(self.frame_category)
         self.comboBox_category.setObjectName("comboBox_category")
         self.comboBox_category.setMaximumSize(QSize(16777215, 25))
-        self.comboBox_category.setMinimumSize(QSize(260, 25))
+        self.comboBox_category.setMinimumSize(QSize(240, 25))
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.comboBox_category)
 
@@ -77,7 +77,7 @@ class Ui_Add_Script(QWidget):
         self.comboBox_sub_category = QComboBox(self.frame_category)
         self.comboBox_sub_category.setObjectName("comboBox_sub_category")
         self.comboBox_sub_category.setMaximumSize(QSize(16777215, 25))
-        self.comboBox_sub_category.setMinimumSize(QSize(260, 25))
+        self.comboBox_sub_category.setMinimumSize(QSize(240, 25))
 
         self.formLayout.setWidget(2, QFormLayout.FieldRole, self.comboBox_sub_category)
 

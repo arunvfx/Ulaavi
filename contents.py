@@ -35,20 +35,20 @@ class TableContent(QTableWidget):
         self.video_formats = ['.mov', '.avi', '.mp4']
         self.mesh_formats = ['.obj', '.abc', '.fbx']
         self.other_formats = self.video_formats + self.mesh_formats
-        self.group = group
+        self.table_width = width
+        self.table_height = height
+        self.progress_bar = progress
         self.current_category = current_category
         self.top_level_category = top_level_category
-        self.progress_bar = progress
-        self.d_type = d_type
+        self.group = group
         self.favourite = fav
+        self.d_type = d_type
         self.search = search.lower()
         self.status = status_label
         self.info_panel = info
         self.is_info = info_status
         self.setGridStyle(Qt.NoPen)
         self.setContentsMargins(0, 0, 0, 0)
-        self.table_width = width
-        self.table_height = height
         self.dropped_files = []
         self.thumb_height = 183
         self.thumb_width = 253
@@ -155,17 +155,8 @@ class TableContent(QTableWidget):
             if self.current_category:
                 file = self.validate_items_dropped_into_table(file)
                 if file:
-                    self.total_file += len(file)
-                    self.status_label(self.total_file)
-                    self.rows = math.ceil(self.total_file/self.cols)
-                    self.setRowCount(self.rows)
-                    pos = [(i, j) for i in range(int(self.rows)) for j in range(int(self.cols))]
-
-                    if not self.cell_position_updated:
-                        cell_position = pos[pos.index(self.last_cell): len(file) + pos.index(self.last_cell)]
-                    else:
-                        cell_position = pos[pos.index(self.last_cell) + 1: len(file) + pos.index(self.last_cell) + 1]
-
+                    pos = self.calc_row_col_pos(file)
+                    cell_position = self.cell_row_col_index(file, pos)
                     self.last_cell = self.load_items_to_cell(cell_position, file)
                     self.cell_position_updated = True
 
@@ -233,27 +224,32 @@ class TableContent(QTableWidget):
                 elif d_type == 'all'and (search == '' or search in os.path.basename(key).lower()):
                     yield str(key), str(value), current_category, str(k)
 
-    def load_items_to_ui(self):
-        """
-        load items into widget as thumbnails
-        """
-        file = [item for item in TableContent.query_items_by_filters(
-            self.current_category, self.top_level_category, self.group, self.d_type, self.search)
-                if item[2] == self.current_category and (item[1] == str(self.favourite) or item[1] == 'True')]
-
+    def calc_row_col_pos(self, file):
         self.total_file = len(file)
         self.status_label(self.total_file)
 
         self.rows = math.ceil(self.total_file / self.cols)
         self.setRowCount(self.rows)
-        pos = [(i, j) for i in range(int(self.rows)) for j in range(int(self.cols))]
+        return [(i, j) for i in range(int(self.rows)) for j in range(int(self.cols))]
+
+    def cell_row_col_index(self, file, pos):
+        if not self.cell_position_updated:
+            return pos[pos.index(self.last_cell): len(file) + pos.index(self.last_cell)]
+        else:
+            return pos[pos.index(self.last_cell) + 1: len(file) + pos.index(self.last_cell) + 1]
+
+    def load_items_to_ui(self):
+        """
+        load items into widget as thumbnails
+        """
+        last_cell_position = ()
+        file = sorted([item for item in TableContent.query_items_by_filters(
+            self.current_category, self.top_level_category, self.group, self.d_type, self.search)
+                if item[2] == self.current_category and (item[1] == str(self.favourite) or item[1] == 'True')])
+        pos = self.calc_row_col_pos(file)
         count = 1
         try:
-            if not self.cell_position_updated:
-                cell_position = pos[pos.index(self.last_cell): len(file) + pos.index(self.last_cell)]
-            else:
-                cell_position = pos[pos.index(self.last_cell) + 1: len(file) + pos.index(self.last_cell) + 1]
-
+            cell_position = self.cell_row_col_index(file, pos)
             for position, f_tuple in zip(cell_position, file):
                 if f_tuple:
                     try:
@@ -267,24 +263,12 @@ class TableContent(QTableWidget):
                                                 self.top_level_category,
                                                 self.current_category,
                                                 f_tuple[3])
-                    source = [
-                        i for i in
-                        TableContent.read_db()[self.group][self.top_level_category][self.current_category][f_tuple[3]]
-                    ]
-                    self.setColumnWidth(position[1], self.thumb_width)
-                    self.setRowHeight(position[0], self.thumb_height)
-
                     self.thumb = Thumbnail(self,
                                            item=cache,
-                                           source=os.path.basename(source[0]),
+                                           source=os.path.basename(f_tuple[0]),
                                            frame_length=frame_length)
-
-                    widget_item = QTableWidgetItem()
-                    widget_item.setData(Qt.UserRole, f_tuple[0])
-                    self.setItem(position[0], position[1], widget_item)
-                    self.setCellWidget(position[0], position[1], self.thumb)
+                    self.add_widget_to_cell(position, self.thumb, f_tuple[0])
                     last_cell_position = (position[0], position[1])
-                    # self.load_progress(count, self.total_file)
                     count += 1
             self.cell_position_updated = True
             self.last_cell = last_cell_position
@@ -293,18 +277,20 @@ class TableContent(QTableWidget):
         except Exception as e:
             print(e)
 
-    def load_progress(self, count, total):
-        progress = int((float(count) / total) * 100)
-        self.progress_bar.setValue(progress)
-        if not progress % 100:
-            self.progress_bar.setVisible(False)
-        else:
-            self.progress_bar.setVisible(True)
+    def add_widget_to_cell(self, position, thumbnail, file):
+        print(file)
+        self.setColumnWidth(position[1], self.thumb_width)
+        self.setRowHeight(position[0], self.thumb_height)
+        widget_item = QTableWidgetItem()
+        widget_item.setData(Qt.UserRole, file)
+        self.setItem(position[0], position[1], widget_item)
+        self.setCellWidget(position[0], position[1], thumbnail)
 
     def load_items_to_cell(self, cell_position, file):
         """
         load thumbnail to specific position in the widget once cache done
         """
+        last_cell_position = ()
         for position, item in zip(cell_position, file):
             if item:
                 try:
@@ -313,9 +299,6 @@ class TableContent(QTableWidget):
                 except Exception:
                     frame_length = None
                     input = item
-
-                self.setColumnWidth(position[1], self.thumb_width)
-                self.setRowHeight(position[0], self.thumb_height)
                 self.thumbnail = Thumbnail(self,
                                            True,
                                            item=input,
@@ -344,11 +327,7 @@ class TableContent(QTableWidget):
                     self.execute_thread(item, position, output, frame_length)
                 else:
                     self.thread_finished((input, os.path.splitext(output)[0] + '.png', position))
-
-                widget_item = QTableWidgetItem()
-                widget_item.setData(Qt.UserRole, input)
-                self.setItem(position[0], position[1], widget_item)
-                self.setCellWidget(position[0], position[1], self.thumbnail)
+                self.add_widget_to_cell(position, self.thumbnail, input)
                 last_cell_position = (position[0], position[1])
         return last_cell_position
 
@@ -373,9 +352,8 @@ class TableContent(QTableWidget):
         try:
             frame_length = int(item[0].split('$$')[1])
             item = (item[0].split('$$')[0], item[1], item[2])
-        except Exception:
+        except Exception as e:
             frame_length = None
-
         try:
             self.thumbnail = Thumbnail(self, item=item[1], source=os.path.basename(item[0]), frame_length=frame_length)
             self.setCellWidget(item[2][0], item[2][1], self.thumbnail)
