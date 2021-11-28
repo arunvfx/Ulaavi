@@ -225,7 +225,7 @@ class TableContent(QTableWidget):
                     yield str(key), str(value), current_category, str(k)
 
     def calc_row_col_pos(self, file):
-        self.total_file = len(file)
+        self.total_file += len(file)
         self.status_label(self.total_file)
 
         self.rows = math.ceil(self.total_file / self.cols)
