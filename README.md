@@ -8,4 +8,4 @@ windows : https://www.gyan.dev/ffmpeg/builds/
 
 Under settings, set path to downloaded ffmpeg bin directory
 
-
+https://youtu.be/IrLRP9MQxjo
