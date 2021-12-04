@@ -197,8 +197,12 @@ class Ui_Settings(QFrame):
 
         self.verticalLayout_2.addWidget(self_footer)
         self.verticalLayout.addWidget(self.group_settings_general)
-        self.btn_browse_proxy.setIcon(QIcon(os.path.dirname(__file__) + '/icons/explore.png'))
-        self.btn_browse_ffmpeg.setIcon(QIcon(os.path.dirname(__file__) + '/icons/explore.png'))
+        self.btn_browse_proxy.setIcon(
+            QIcon(os.path.dirname(os.path.dirname(__file__)) + '/icons/explore.png')
+        )
+        self.btn_browse_ffmpeg.setIcon(
+            QIcon(os.path.dirname(os.path.dirname(__file__)) + '/icons/explore.png')
+        )
         self.btn_browse_proxy.setStyleSheet('QPushButton{background-color: #313131;}')
         self.btn_browse_ffmpeg.setStyleSheet('QPushButton{background-color: #313131;}')
 

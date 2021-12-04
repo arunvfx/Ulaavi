@@ -5,9 +5,9 @@ from PySide2.QtWidgets import QWidget, QVBoxLayout, QFrame, QHBoxLayout, QLabel,
 from PySide2.QtCore import QSize, Qt, QCoreApplication
 
 
-class Ui_Add_Script(QWidget):
-    def __init__(self):
-        super(Ui_Add_Script, self).__init__()
+class Template(QWidget):
+    def __init__(self, parent=None):
+        super(Template, self).__init__(parent)
         self.resize(500, 200)
         self.setMinimumSize(QSize(500, 200))
         self.setMaximumSize(QSize(500, 200))

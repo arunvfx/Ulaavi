@@ -7,14 +7,19 @@ menu = nuke.menu('Nuke').addMenu('thEdge')
 menu.addCommand('Ulaavi', 'main()')
 
 
-def loadWidgetPanel(widgetPP):
-    widgetPP.addToPane()
+class UlaaviPanel(nukescripts.PythonPanel):
+    def __init__(self):
+        super(UlaaviPanel, self).__init__(title="Ulaavi", id="uk.co.thefoundry.UlaaviPanel")
+        self.pyKnob = nuke.PyCustom_Knob("", "", "UlaaviKnob()")
+        self.addKnob(self.pyKnob)
 
-widgetPP = widgetPanel()
-nuke.menu('Pane').addCommand("Ulaavi", "loadWidgetPanel(widgetPP)")
+
+class UlaaviKnob:
+
+    def makeUI(self):
+        self.ulaavi = Ulaavi()
+        return self.ulaavi
 
 
-# from nukescripts import panels
-# pane = nuke.getPaneFor('Properties.1')
-#
-# panels.registerWidgetAsPanel('Elements', 'Ulaavi', 'uk.co.thefoundry.Elements', True).addToPane(pane)
+ulaavi_wid = UlaaviPanel()
+nuke.menu('Pane').addCommand("Ulaavi", "ulaavi_wid.addToPane()")

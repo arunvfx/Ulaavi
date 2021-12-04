@@ -1,6 +1,6 @@
 import json
 import os
-from settings import Settings
+from utils.settings import Settings
 
 
 class Database:
@@ -23,7 +23,7 @@ class Database:
         if depth == 1:
             data[group].update({dictionary:{}})
         if depth == 2:
-            data[group][selected_item].update({dictionary:{}})
+            data[group][selected_item].update({dictionary: {}})
         if not depth:
             data.update(dictionary)
         with open(self.file, 'w') as file:
@@ -59,8 +59,8 @@ class Database:
         if depth == 2:
             return 'Removed %s from json' % selected_sub
 
-
-    def update_category_to_json(self, updated_data, current_data, depth=None, group=None, selected_sub=None):
+    def update_category_to_json(self, updated_data, current_data, depth=None, group=None,
+                                selected_sub=None):
         """
         update category
         """
