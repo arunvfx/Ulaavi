@@ -1,7 +1,7 @@
 # Ulaavi
 Ulaavi for nuke, helps to keep our stock elements organised.
 <br> 
-#Platforms
+# Platforms
 Windows, Mac and Linux.
 
 # Installation
