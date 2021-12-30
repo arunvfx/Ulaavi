@@ -1,6 +1,8 @@
 # Ulaavi
 Ulaavi for nuke, helps to keep our stock elements organised.
-Platforms : Windows, Mac and Linux.
+<br> 
+#Platforms
+Windows, Mac and Linux.
 
 # Installation
 Downlaod ffmpeg from ffmpeg.org<br>
