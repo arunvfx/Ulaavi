@@ -18,9 +18,9 @@ class Ulaavi(QtWidgets.QWidget):
         self.categories = categoriesUI.Categories(self)
         self.hLayout.addWidget(self.categories)
 
-        self.categories.group.new_group.connect(self.on_create_group)
-        self.categories.group.group_change_event.connect(self.on_change_group)
-        self.categories.group.remove_group.connect(self.on_remove_group)
+        self.categories.group.on_group_new.connect(self.on_create_group)
+        self.categories.group.on_group_change.connect(self.on_change_group)
+        self.categories.group.on_group_remove.connect(self.on_remove_group)
 
     def on_create_group(self, group_name: str):
         """

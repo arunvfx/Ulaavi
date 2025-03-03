@@ -26,12 +26,3 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         :return: None
         """
         print('add item!')
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-
-    categories = CategoriesTree()
-    categories.show()
-
-    sys.exit(app.exec_())

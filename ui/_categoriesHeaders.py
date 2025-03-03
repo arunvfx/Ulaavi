@@ -35,10 +35,3 @@ class Headers(QtWidgets.QFrame):
 
         self.__layout.setContentsMargins(0, 0, 0, 0)
         self.__layout.setSpacing(1)
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    h = Headers()
-    h.show()
-    app.exec_()

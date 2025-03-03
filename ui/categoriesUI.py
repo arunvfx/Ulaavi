@@ -25,19 +25,3 @@ class Categories(QtWidgets.QFrame):
 
         self.header.btn_categories_item_add.clicked.connect(
             self.tree.add_item)
-
-    def get_group_name(self) -> str or None:
-        input_, key_pressed = QtWidgets.QInputDialog.getText(
-            self, 'Group Name', 'Enter the Group Name')
-
-        print(input_, key_pressed)
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-
-    cm = Categories()
-    cm.show()
-
-    app.exec_()
-

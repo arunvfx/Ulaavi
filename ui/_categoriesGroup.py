@@ -8,9 +8,9 @@ class CategoriesGroup(QtWidgets.QFrame):
     """
     categories group
     """
-    new_group = QtCore.Signal(str)
-    group_change_event = QtCore.Signal(str)
-    remove_group = QtCore.Signal(str)
+    on_group_new = QtCore.Signal(str)
+    on_group_change = QtCore.Signal(str)
+    on_group_remove = QtCore.Signal(str)
 
     def __init__(self) -> None:
         """
@@ -61,7 +61,7 @@ class CategoriesGroup(QtWidgets.QFrame):
             self.cmb_group.addItem(group_name)
             self.cmb_group.setCurrentText(group_name)
 
-            self.new_group.emit(group_name)
+            self.on_group_new.emit(group_name)
 
     def _remove_group(self):
         remove_group: bool = commonWidgets.popup_message(
@@ -73,10 +73,10 @@ class CategoriesGroup(QtWidgets.QFrame):
         if remove_group:
             current_group = self.current_group
             self.cmb_group.removeItem(self.cmb_group.currentIndex())
-            self.remove_group.emit(current_group)
+            self.on_group_remove.emit(current_group)
 
     def _group_change_event(self):
-        self.group_change_event.emit(self.current_group)
+        self.on_group_change.emit(self.current_group)
 
     @property
     def current_group(self) -> str:
@@ -85,12 +85,3 @@ class CategoriesGroup(QtWidgets.QFrame):
         :return:
         """
         return self.cmb_group.currentText()
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-
-    p = CategoriesGroup()
-    p.show()
-
-    sys.exit(app.exec_())
