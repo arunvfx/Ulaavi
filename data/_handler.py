@@ -1,9 +1,9 @@
 import configparser
-from pathlib import Path
-import os
 import json
-
+import os
+import re
 from abc import abstractmethod, ABC
+from pathlib import Path
 
 
 def make_directory(path: Path) -> None:
@@ -57,11 +57,12 @@ class DataJson(JsonHandler):
 
         self.__data = self.deserialize()
 
-    def update_json(self, category_grp: str = '',
-                    category_items: str = '',
-                    data: dict or None = None,
-                    data_type: str = 'data',
-                    tag: str = '') -> None:
+    def add_key(self,
+                category_grp: str = '',
+                category: str = '',
+                data: dict or None = None,
+                data_type: str = 'data',
+                tag: str = '') -> None:
         """
         serialize data to json
 
@@ -70,7 +71,7 @@ class DataJson(JsonHandler):
         :param data_type:
         :type data_type:
         :param category_grp:
-        :param category_items:
+        :param category:
         :param data:
         :return:
         """
@@ -82,13 +83,13 @@ class DataJson(JsonHandler):
             if not category_grp:
                 raise KeyError('"category_grp" is must for data type "data"!')
 
-            if category_grp and not category_items:
+            if category_grp and not category:
                 self.__data[data_type][category_grp] = {}
 
-            elif category_items:
+            elif category:
                 if not data:
                     data = {}
-                self.__data[data_type][category_grp][category_items] = data
+                self.__data[data_type][category_grp][category] = data
 
         elif data_type == 'tags':
             if not tag:
@@ -101,18 +102,35 @@ class DataJson(JsonHandler):
 
     def remove_key(self,
                    category_grp: str = '',
-                   key_to_remove: str = '',
+                   category_key: str = '',
                    data_type: str = 'data',
                    tag: str = '') -> None:
+        """
+        remove group by 'category_grp' if 'category_key' does not exist and data_type=data.
+        remove category by 'category_grp and key_to_remove' if 'category_key' exists and data_type=data.
+        remove also child categories if remove_child is True, default is True
+        remove tag if data_type=tags and tag exists.
+
+        :param category_grp: group name
+        :type category_grp: str
+        :param category_key: category key
+        :type category_key: str
+        :param data_type: either data or tags
+        :type data_type: str
+        :param tag: tag element
+        :type tag: str
+        :return: None
+        :rtype: None
+        """
 
         if data_type == 'data':
-            if not key_to_remove:
+            if not category_key:
                 self.__data[data_type].pop(category_grp)
             else:
                 item_to_pop = []
 
                 for item_key, item_value in self.__data[data_type].get(category_grp).items():
-                    if item_key.startswith(key_to_remove):
+                    if re.match(r"^%s(\|.*)?$" % category_key.replace('|', '\|'), item_key):
                         item_to_pop.append(item_key)
 
                 for item in item_to_pop:
@@ -122,7 +140,37 @@ class DataJson(JsonHandler):
 
         self.serialize(self.__data)
 
-    # @functools.lru_cache(maxsize=None)
+    def update_key(self, group_name: str, category_to_replace: str, category_to_update: str) -> None:
+        """
+        rename key
+
+        :param group_name: group name
+        :type group_name: str1
+        :param category_to_replace: previous category key
+        :type category_to_replace: str
+        :param category_to_update: renamed category key
+        :type category_to_update: str
+        :return: None
+        :rtype: None
+        """
+        data = {"data": {group_name: {}}, "tags": self.__data.get('tags')}
+
+        for category, value in self.__data["data"][group_name].items():
+            if re.match(r"^%s(\|.*)?$" % category_to_replace.replace('|', '\|'), category) is None:
+                data["data"][group_name][category] = value
+                continue
+
+            renamed_category = category.replace(category_to_replace, category_to_update)
+            print(data)
+            data["data"][group_name][renamed_category] = value
+
+        self.serialize(data)
+
+        self.refresh_data()
+
+    def refresh_data(self):
+        self.__data = self.deserialize()
+
     @property
     def data(self) -> dict or None:
         """

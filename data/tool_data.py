@@ -21,6 +21,7 @@ class Data:
     def groups(self) -> Generator:
         """
         get group name from data.json
+
         :return: group names
         :rtype: Generator[str]
         """
@@ -39,17 +40,59 @@ class Data:
         :return: None
         :rtype: None
         """
-        self.data_obj.update_json(category_grp=group_name)
+        self.data_obj.add_key(category_grp=group_name)
 
     def remove_group(self, group: str):
         self.data_obj.remove_key(category_grp=group)
+
+    def add_category(self, group_name: str, category: str) -> None:
+        """
+        add category
+
+        :param group_name: group name
+        :type group_name: str
+        :param category: category
+        :type category: str
+        :return: None
+        :rtype: None
+        """
+        self.data_obj.add_key(category_grp=group_name, category=category)
+        print(self.__data)
+
+    def rename_category(self, group_name: str, old_category: str, category: str) -> None:
+        """
+        rename category
+
+        :param group_name: group name
+        :type group_name: str
+        :param old_category: previous category name
+        :type old_category: str
+        :param category: new category name
+        :type category: str
+        :return: None
+        :rtype: None
+        """
+        self.data_obj.update_key(group_name, old_category, category)
+
+    def remove_category(self, group_name: str, category: str):
+        """
+        remove category
+
+        :param group_name: group name
+        :type group_name: str`
+        :param category: category
+        :type category: str
+        :return: None
+        :rtype: None
+        """
+        self.data_obj.remove_key(category_grp=group_name, category_key=category)
 
     @property
     def tags(self):
         return self.__tags
 
     def add_tags(self, tag):
-        self.data_obj.update_json(data_type='tags', tag=tag)
+        self.data_obj.add_key(data_type='tags', tag=tag)
 
     def is_category_exists(self, group_name: str, category: str) -> bool:
         """
