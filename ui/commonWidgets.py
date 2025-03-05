@@ -47,19 +47,3 @@ def popup_message(title, content, msgType='message', parent=None):
         return True
 
     return False
-
-    # remove_dialog = QtWidgets.QDialog(parent)
-    # remove_dialog.setWindowIcon(QtWidgets.QMessageBox.Warning)
-    # remove_dialog.setStyleSheet("QDialog {background-color:  #323232;} "
-    #                             "QLabel{border-radius: 5px; background-color:  #232323;} ")
-    # remove_dialog.setFixedSize(400, 100)
-    # remove_dialog.setWindowTitle(title.capitalize())
-    # remove_button = QtWidgets.QDialogButtonBox(
-    #     QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
-    # remove_button.rejected.connect(remove_dialog.close)
-    # remove_warning = QtWidgets.QLabel(content)
-    # remove_warning.setAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignHCenter)
-    # popup_layout = QtWidgets.QVBoxLayout(remove_dialog)
-    # popup_layout.addWidget(remove_warning)
-    # popup_layout.addWidget(remove_button)
-    # remove_dialog.show()

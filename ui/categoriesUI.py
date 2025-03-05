@@ -2,7 +2,6 @@ import sys
 from PySide2 import QtWidgets
 
 from ui._categoriesGroup import CategoriesGroup
-from ui._categoriesHeaders import Headers
 from ui._categoriesTree import CategoriesTree
 
 
@@ -12,16 +11,45 @@ class Categories(QtWidgets.QFrame):
         super().__init__(parent)
 
         self.group = CategoriesGroup()
-        self.header = Headers()
         self.tree = CategoriesTree()
+
         self.__main_layout = QtWidgets.QVBoxLayout(self)
         self.__main_layout.addWidget(self.group)
-        self.__main_layout.addWidget(self.header)
         self.__main_layout.addWidget(self.tree)
+        self.__main_layout.setContentsMargins(9, 0, 0, 0)
 
         self._set_widget_connections()
+        self.on_change_group('')
 
     def _set_widget_connections(self) -> None:
+        self.group.on_group_change.connect(self.on_change_group)
+        self.group.on_group_new.connect(self._update_tree_group_attribute)
+        self.group.on_group_remove.connect(
+            lambda removedGrp: self._update_tree_group_attribute(self.group.current_group))
 
-        self.header.btn_categories_item_add.clicked.connect(
-            self.tree.add_item)
+    def on_change_group(self, group_name: str or None):
+        """
+        on change current group name
+
+        :param group_name: group name
+        :type group_name: str
+        :return: None
+        :rtype: None
+        """
+        if not group_name:
+            self.tree.setEnabled(False)
+        else:
+            self.tree.setEnabled(True)
+
+        self._update_tree_group_attribute(group_name)
+
+    def _update_tree_group_attribute(self, group_name: str):
+        """
+        update current group attribute in treeWidget class.
+
+        :param group_name: group name
+        :type group_name: str
+        :return: None
+        :rtype: NOne
+        """
+        self.tree.current_group = group_name

@@ -43,11 +43,13 @@ class CategoriesGroup(QtWidgets.QFrame):
         self.__layout.setSpacing(1)
 
     def _widget_connections(self):
-        self.btn_add.clicked.connect(self._add_new_group)
-        self.btn_remove.clicked.connect(self._remove_group)
-        self.cmb_group.currentIndexChanged.connect(self._group_change_event)
 
-    def _add_new_group(self):
+        self.btn_add.clicked.connect(self._create_new_group)
+        self.btn_remove.clicked.connect(self._remove_group)
+        self.cmb_group.currentIndexChanged.connect(
+            lambda: self.on_group_change.emit(self.current_group))
+
+    def _create_new_group(self):
         """
         add category group
         :return:
@@ -60,7 +62,6 @@ class CategoriesGroup(QtWidgets.QFrame):
         if btn_pressed:
             self.cmb_group.addItem(group_name)
             self.cmb_group.setCurrentText(group_name)
-
             self.on_group_new.emit(group_name)
 
     def _remove_group(self):
@@ -75,13 +76,23 @@ class CategoriesGroup(QtWidgets.QFrame):
             self.cmb_group.removeItem(self.cmb_group.currentIndex())
             self.on_group_remove.emit(current_group)
 
-    def _group_change_event(self):
-        self.on_group_change.emit(self.current_group)
-
     @property
     def current_group(self) -> str:
         """
-        currne
-        :return:
+        get current group
+        :return: group name
+        :rtype: str
         """
         return self.cmb_group.currentText()
+
+    def add_groups(self, groups) -> None:
+        """
+        add groups to QComboBox.
+
+        :param groups: list of groups
+        :type groups: list
+        :return: None
+        :rtype: None
+        """
+        for group in groups:
+            self.cmb_group.addItem(group)

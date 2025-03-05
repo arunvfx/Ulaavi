@@ -1,59 +1,45 @@
+"""_summary_
+"""
+
 import sys
 from PySide2 import QtWidgets, QtCore
 
-from ui import categoriesUI
+from ui import assembleUI
+from data import tool_data
 
 
-class Ulaavi(QtWidgets.QWidget):
+class Ulaavi(QtWidgets.QWidget, assembleUI.MainUI):
     """
     Show Thumbnail
     """
 
     def __init__(self):
         super().__init__()
+        self.setupUi(self)
 
-        self.hLayout = QtWidgets.QHBoxLayout(self)
-        self.hLayout.setContentsMargins(0, 0, 0, 0)
+        self.data = tool_data.Data.get_instance()
+        self._widget_connections()
 
-        self.categories = categoriesUI.Categories(self)
-        self.hLayout.addWidget(self.categories)
+    def _widget_connections(self):
+        self.categories.group.on_group_new.connect(self.data.add_group)
+        self.categories.group.on_group_remove.connect(self.data.remove_group)
+        # self.categories.group.on_group_change.connect(self.categories.on_change_group)
+        self.categories.tree.on_rename.connect(self.on_category_create)
+        # self.categories.tree.is_category_exists.connect(
+        #     lambda group, category: self.categories.tree.update_category_exists(
+        #         self.data.is_category_exists(group, category))
+        # )
+        self.categories.tree.is_category_exists.connect(self.on_rename)
+        self.categories.group.add_groups(self.data.groups())
 
-        self.categories.group.on_group_new.connect(self.on_create_group)
-        self.categories.group.on_group_change.connect(self.on_change_group)
-        self.categories.group.on_group_remove.connect(self.on_remove_group)
+    def on_category_create(self, group_name, old_name, category_name):
+        print(f'GN: {group_name}   OLD: {old_name}   ,Category: {category_name}')
 
-    def on_create_group(self, group_name: str):
-        """
-        on create group
+    def on_rename(self, group, category):
+        t = self.data.is_category_exists(group, category)
+        print(t)
+        # self.categories.tree.update_category_exists(
 
-        :param group_name: group name
-        :type group_name: str
-        :return: None
-        :rtype: None
-        """
-        print('CREATE GROUP NAME: ', group_name)
-
-    def on_change_group(self, group_name: str):
-        """
-        on change current group name
-
-        :param group_name: group name
-        :type group_name: str
-        :return: None
-        :rtype: None
-        """
-        print('CURRENT GROUP NAME: ', group_name)
-
-    def on_remove_group(self, group_name: str):
-        """
-        on remove group
-
-        :param group_name: group name
-        :type group_name: str
-        :return: None
-        :rtype: NOne
-        """
-        print('REMOVE GROUP: ', group_name)
 
 
 if __name__ == '__main__':
