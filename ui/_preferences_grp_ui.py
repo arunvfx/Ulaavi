@@ -28,6 +28,10 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
         self.btn_browse_proxy.setFlat(True)
         self.btn_browse_json.setFlat(True)
 
+        self.lineEdit_res_width.setValidator(QtGui.QIntValidator(100, 600))
+        self.lineEdit_res_height.setValidator(QtGui.QIntValidator(100, 600))
+        self.lineEdit_thread_count.setValidator(QtGui.QIntValidator(1, 8))
+
     def _set_widget_connections(self):
         self.btn_reset.clicked.connect(self._reset_pref)
         self.btn_apply.clicked.connect(self._apply_pref)
@@ -67,11 +71,10 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
 
     def _browse_proxy_directory(self):
         file_browser = QtWidgets.QFileDialog(self)
-        # file_browser.setStyleSheet(self.ui.styleSheet())
+
         return file_browser.getExistingDirectory(
             self, "Select Directory", "",
-            options=QtWidgets.QFileDialog.DontUseNativeDialog
-        )
+            options=QtWidgets.QFileDialog.DontUseNativeDialog)
 
 
 if __name__ == '__main__':
