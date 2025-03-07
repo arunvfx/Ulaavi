@@ -1,4 +1,12 @@
-from PySide2 import QtWidgets, QtCore
+# -------------------------------- built-in Modules ----------------------------------
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets
+
+# -------------------------------- Custom Modules ------------------------------------
 
 
 def get_input_widget(title, label, parent=None):

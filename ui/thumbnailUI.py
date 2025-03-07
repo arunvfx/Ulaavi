@@ -1,4 +1,12 @@
-from PySide2 import QtWidgets, QtCore, QtGui
+# -------------------------------- built-in Modules ----------------------------------
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets, QtCore, QtGui
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets, QtCore, QtGui
+
+# -------------------------------- Custom Modules ------------------------------------
 
 
 class ThumbnailUI(QtWidgets.QTableWidget):

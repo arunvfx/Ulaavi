@@ -1,14 +1,24 @@
-from PySide2 import QtWidgets, QtCore
+# -------------------------------- built-in Modules ----------------------------------
+import re
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets, QtCore
+    from PySide2.QtWidgets import QAction
+
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets, QtCore, QtGui
+    from PySide6.QtGui import QAction
+
+# -------------------------------- Custom Modules ------------------------------------
 from . import commonWidgets
 
 
 class TreeWidgetItem(QtWidgets.QTreeWidgetItem):
     def __init__(self, selected_item, category_group, treeWidget):
         QtWidgets.QTreeWidgetItem.__init__(self, selected_item)
-
         self.__category_group = category_group
         self.__tree = treeWidget
-        self.setFlags(self.flags() | QtCore.Qt.ItemIsEditable)
 
     def setData(self, column, role, value):
         """
@@ -24,44 +34,13 @@ class TreeWidgetItem(QtWidgets.QTreeWidgetItem):
         :rtype: None
         """
         if role in (QtCore.Qt.EditRole, QtCore.Qt.DisplayRole):
-            user_data = self._user_data(value)
+            _user_data = self.__tree.user_data(value, self)
 
-            if not user_data:
+            if not _user_data or self._is_category_exists(value, _user_data):
+                self.setFlags(self.flags() & ~QtCore.Qt.ItemIsEditable)
                 return
-
-            is_exists = self._is_category_exists(value, user_data)
-            if is_exists:
-                return
-
-            QtWidgets.QTreeWidgetItem.setData(self, column, QtCore.Qt.UserRole, user_data)
 
         QtWidgets.QTreeWidgetItem.setData(self, column, QtCore.Qt.EditRole, value)
-        self.setFlags(self.flags() & ~QtCore.Qt.ItemIsEditable)
-
-    def _user_data(self, category: str) -> str or None:
-        """
-        generate user data
-
-        :param category: category name
-        :type category: str
-        :return: user data (ex: root|data)
-        :rtype: str or None
-        """
-        tree_items = []
-        current_item = self
-
-        while True:
-            tree_items.append(current_item.text(0))
-            current_item = current_item.parent()
-            if current_item is None:
-                break
-
-        if not tree_items:
-            return
-
-        tree_items = tree_items[::-1][:-1]
-        tree_items.append(category)
-        return '|'.join(tree_items)
 
     def _is_category_exists(self, category, tree_item_string: str):
         """
@@ -75,7 +54,7 @@ class TreeWidgetItem(QtWidgets.QTreeWidgetItem):
         :rtype:
         """
         for item in self.__tree.findItems(category, QtCore.Qt.MatchRecursive, 0):
-            if item.data(0, QtCore.Qt.UserRole) == tree_item_string:
+            if self.__tree.user_data(item.text(0), item) == tree_item_string:
                 return True
 
         return False
@@ -107,8 +86,7 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         self._set_widget_properties()
         self._widget_connections()
 
-        self._root_item()
-        self.findItems("me", QtCore.Qt.MatchContains | QtCore.Qt.UserRole, 0)
+        self.root_item()
 
     def _set_widget_properties(self) -> None:
         """
@@ -123,16 +101,13 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         self.header().setVisible(False)
         self.header().setDefaultSectionSize(50)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.context_menu)
+        self.customContextMenuRequested.connect(self._context_menu)
 
     def _widget_connections(self):
         self.currentItemChanged.connect(self._on_current_item_changed)
         self.itemChanged.connect(self._item_changed)
 
-    def update_category_exists(self, is_exist: bool):
-        self.__is_category_exists = is_exist
-
-    def _root_item(self):
+    def root_item(self):
         """
         load 'root' to tree and load categories as children.
         """
@@ -143,13 +118,13 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         self.expandItem(root)
         self.setCurrentItem(root)
 
-    def context_menu(self, position) -> None:
+    def _context_menu(self, position) -> None:
         """
         context memu
         """
-        add_action = QtWidgets.QAction("Add")
-        rename_action = QtWidgets.QAction("Rename")
-        delete_action = QtWidgets.QAction("Delete")
+        add_action = QAction("Add")
+        rename_action = QAction("Rename")
+        delete_action = QAction("Delete")
 
         menu = QtWidgets.QMenu(self)
         menu.addAction(add_action)
@@ -157,13 +132,39 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         menu.addSeparator()
         menu.addAction(delete_action)
 
-        add_action.triggered.connect(self.create_item)
+        add_action.triggered.connect(self._create_item)
         rename_action.triggered.connect(self._rename_category)
         delete_action.triggered.connect(self._delete_items)
 
         menu.exec_(self.mapToGlobal(position))
 
-    def create_item(self):
+    def user_data(self, category: str, current_item: QtWidgets.QTreeWidgetItem) -> str or None:
+        """
+        generate user data
+
+        :param category: category name
+        :type category: str
+        :param current_item: category name
+        :type current_item: str
+        :return: user data (ex: root|data)
+        :rtype: str or None
+        """
+        tree_items = []
+
+        while True:
+            tree_items.append(current_item.text(0))
+            current_item = current_item.parent()
+            if current_item is None:
+                break
+
+        if not tree_items:
+            return
+
+        tree_items = tree_items[::-1][:-1]
+        tree_items.append(category)
+        return '|'.join(tree_items)
+
+    def _create_item(self):
         try:
             max_item = str(
                 int(
@@ -183,7 +184,7 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         item.setText(0, f"New_Item_{max_item}")
         item.setFlags(
             selected_item.flags() | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-        self.addTopLevelItem(item)
+        # self.addTopLevelItem(item)
         self.currentItem().setExpanded(True)
         self.editItem(item, 0)
         self.__category_to_create = self.item_user_role
@@ -214,17 +215,67 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         :return: None
         :rtype: None
         """
-        user_data = self.item_user_role
-        if user_data:
+        _user_data = self.item_user_role
+        if _user_data:
             self.on_change.emit(self.current_group, self.item_user_role)
+
+    def is_category_item_exists(self, category, tree_item_string: str):
+        """
+        check the item already exists or not. if exist, return QTreeWidgetItem
+
+        :param category: category name (ex: data)
+        :type category: str
+        :param tree_item_string: tree user data (ex: root|data)
+        :type tree_item_string: str
+        :return: is exist, QTreeWidgetItem or None
+        :rtype: bool, QTreeWidgetItem or None
+        """
+        for item in self.findItems(category, QtCore.Qt.MatchRecursive, 0):
+            if re.match(r"^%s(\|.*)?$" % self.user_data(category, item).replace('|', '\|'), tree_item_string):
+                return True, item
+
+        return False, None
 
     @property
     def current_item_text(self):
         return self.currentItem().text(0)
 
+    def add_categories(self, categories: list):
+        """
+        add categories
+
+        :param categories: category names
+        :type categories: list
+        :return: None
+        :rtype: None
+        """
+        for category in sorted(categories):
+            _current_item = self.__root_tree_item
+            category_items = category.split('|')
+            _user_data = category_items[0]
+            for category_name in category_items[1:]:
+                if not category_name.strip():
+                    continue
+
+                is_exist, item = self.is_category_item_exists(category_name, category)
+                if is_exist:
+                    _current_item = item
+                    _user_data += f'|{item.text(0)}'
+                    continue
+
+                item = TreeWidgetItem(_current_item, self.current_group, self)
+                _user_data += f'|{category_name}'
+                item.setText(0, category_name)
+                _current_item.addChild(item)
+                item.setFlags(
+                    item.flags() | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+                _current_item = item
+
     @property
-    def item_user_role(self, column: int = 0):
-        return self.currentItem().data(column, QtCore.Qt.UserRole)
+    def item_user_role(self):
+        current_item = self.currentItem()
+        if current_item:
+            return self.user_data(self.current_item_text, current_item)
 
     def _delete_items(self):
         """
@@ -233,7 +284,7 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         :return: None
         :rtype: None
         """
-        if self.currentItem().text(0).lower() == "root":
+        if self.current_item_text.lower() == "root":
             return
 
         if not commonWidgets.popup_message('Delete Item(s)',
@@ -242,8 +293,6 @@ class CategoriesTree(QtWidgets.QTreeWidget):
                                            parent=self):
             return
 
-        current_item_user_data = self.currentItem().data(0, QtCore.Qt.UserRole)
+        self.on_remove.emit(self.current_group, self.item_user_role)
         self.currentItem().takeChildren()
         self.currentItem().parent().removeChild(self.currentItem())
-
-        self.on_remove.emit(self.current_group, current_item_user_data)

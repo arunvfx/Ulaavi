@@ -1,6 +1,12 @@
-import sys
-from PySide2 import QtWidgets
+# -------------------------------- built-in Modules ----------------------------------
 
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets
+
+# -------------------------------- Custom Modules ------------------------------------
 from ui._categoriesGroup import CategoriesGroup
 from ui._categoriesTree import CategoriesTree
 
@@ -41,6 +47,7 @@ class Categories(QtWidgets.QFrame):
         else:
             self.tree.setEnabled(True)
 
+        self.tree.root_item()
         self._update_tree_group_attribute(group_name)
 
     def _update_tree_group_attribute(self, group_name: str):

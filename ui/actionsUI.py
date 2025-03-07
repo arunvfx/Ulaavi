@@ -1,8 +1,18 @@
+# -------------------------------- built-in Modules ----------------------------------
 from pathlib import Path
-from PySide2 import QtWidgets, QtCore, QtGui
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets, QtCore, QtGui
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets, QtCore, QtGui
+
+
+# -------------------------------- Custom Modules ------------------------------------
 
 
 class ActionsUI(QtWidgets.QWidget):
+    on_settings = QtCore.Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -18,16 +28,19 @@ class ActionsUI(QtWidgets.QWidget):
         self.__hLayout.addWidget(self.btn_settings)
 
         self._set_widget_properties()
+        self._set_widget_connections()
 
     def _set_widget_properties(self):
         self.btn_settings.setFixedHeight(26)
         self.btn_settings.setFlat(True)
         self.btn_settings.setFixedSize(QtCore.QSize(26, 26))
-        self.btn_settings.setIcon(QtGui.QIcon(f'{Path.cwd()}/icons/setting.png'))
+        self.btn_settings.setIcon(QtGui.QIcon(f'{Path(__file__).parent.parent}/icons/setting.png'))
+
+    def _set_widget_connections(self):
+        self.btn_settings.clicked.connect(lambda: self.on_settings.emit())
 
 
 class Actions(QtWidgets.QFrame):
-
     on_snap_script = QtCore.Signal()
     on_refresh = QtCore.Signal()
 
@@ -48,8 +61,8 @@ class Actions(QtWidgets.QFrame):
         self.btn_snap_script.setFlat(True)
         self.btn_refresh.setFixedSize(QtCore.QSize(26, 26))
         self.btn_snap_script.setFixedSize(QtCore.QSize(26, 26))
-        self.btn_refresh.setIcon(QtGui.QIcon(f'{Path.cwd()}/icons/refresh.png'))
-        self.btn_snap_script.setIcon(QtGui.QIcon(f'{Path.cwd()}/icons/capture.png'))
+        self.btn_refresh.setIcon(QtGui.QIcon(f'{Path(__file__).parent.parent}/icons/refresh.png'))
+        self.btn_snap_script.setIcon(QtGui.QIcon(f'{Path(__file__).parent.parent}/icons/capture.png'))
         self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.setFrameShadow(QtWidgets.QFrame.Plain)

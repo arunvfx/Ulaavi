@@ -1,170 +1,55 @@
-from PySide2 import QtWidgets, QtCore
+# -------------------------------- built-in Modules ----------------------------------
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets, QtCore
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets, QtCore
+
+# -------------------------------- Custom Modules ------------------------------------
+from . import _preferences_grp_ui
 
 
-class Preferences(QtWidgets.QWidget):
-    on_reset = QtCore.Signal()
-    on_apply = QtCore.Signal(dict)
+class SettingsUI(QtWidgets.QWidget):
 
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    on_close = QtCore.Signal()
 
-        self.verticalLayout = QtWidgets.QVBoxLayout(self)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.frame = QtWidgets.QFrame(self)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame)
-        self.verticalLayout_2.setSpacing(3)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.general_group = QtWidgets.QGroupBox(self.frame)
-        self.general_group.setObjectName(u"general_group")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.general_group)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.gridLayout = QtWidgets.QGridLayout()
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.label_7 = QtWidgets.QLabel(self.general_group)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gridLayout.addWidget(self.label_7, 6, 0, 1, 1)
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.lineEdit_proxy_resolution_width = QtWidgets.QLineEdit(self.general_group)
-        self.lineEdit_proxy_resolution_width.setObjectName(u"lineEdit_proxy_resolution_width")
-        self.lineEdit_proxy_resolution_width.setMinimumSize(QtCore.QSize(100, 25))
-        self.lineEdit_proxy_resolution_width.setMaximumSize(QtCore.QSize(100, 25))
-        self.lineEdit_proxy_resolution_width.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.horizontalLayout_3.addWidget(self.lineEdit_proxy_resolution_width)
-        self.lineEdit_proxy_resolution_height = QtWidgets.QLineEdit(self.general_group)
-        self.lineEdit_proxy_resolution_height.setObjectName(u"lineEdit_proxy_resolution_height")
-        self.lineEdit_proxy_resolution_height.setMinimumSize(QtCore.QSize(100, 25))
-        self.lineEdit_proxy_resolution_height.setMaximumSize(QtCore.QSize(100, 253))
-        self.lineEdit_proxy_resolution_height.setFocusPolicy(QtCore.Qt.ClickFocus)
-        self.horizontalLayout_3.addWidget(self.lineEdit_proxy_resolution_height)
-        self.horizontalSpacer_2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                        QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
-        self.gridLayout.addLayout(self.horizontalLayout_3, 5, 1, 1, 1)
-        self.label_3 = QtWidgets.QLabel(self.general_group)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gridLayout.addWidget(self.label_3, 2, 0, 1, 1)
-        self.label_6 = QtWidgets.QLabel(self.general_group)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gridLayout.addWidget(self.label_6, 5, 0, 1, 1)
-        self.lineEdit_threads = QtWidgets.QLineEdit(self.general_group)
-        self.lineEdit_threads.setObjectName(u"lineEdit_threads")
-        self.lineEdit_threads.setMinimumSize(QtCore.QSize(0, 25))
-        self.lineEdit_threads.setMaximumSize(QtCore.QSize(60, 25))
-        self.gridLayout.addWidget(self.lineEdit_threads, 3, 1, 1, 1)
-        self.lineEdit_data_json = QtWidgets.QLineEdit(self.general_group)
-        self.lineEdit_data_json.setObjectName(u"lineEdit_data_json")
-        self.lineEdit_data_json.setMinimumSize(QtCore.QSize(0, 25))
-        self.lineEdit_data_json.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.gridLayout.addWidget(self.lineEdit_data_json, 2, 1, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.general_group)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter)
-        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
-        self.lineEdit_proxy = QtWidgets.QLineEdit(self.general_group)
-        self.lineEdit_proxy.setObjectName(u"lineEdit_proxy")
-        self.lineEdit_proxy.setMinimumSize(QtCore.QSize(0, 25))
-        self.lineEdit_proxy.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.gridLayout.addWidget(self.lineEdit_proxy, 1, 1, 1, 1)
-        self.btn_data_json = QtWidgets.QPushButton(self.general_group)
-        self.btn_data_json.setObjectName(u"btn_data_json")
-        self.btn_data_json.setMinimumSize(QtCore.QSize(25, 25))
-        self.btn_data_json.setMaximumSize(QtCore.QSize(25, 25))
-        self.gridLayout.addWidget(self.btn_data_json, 2, 2, 1, 1)
-        self.horizontalSpacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                      QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(self.horizontalSpacer, 0, 3, 1, 1)
-        self.btn_proxy = QtWidgets.QPushButton(self.general_group)
-        self.btn_proxy.setObjectName(u"btn_proxy")
-        self.btn_proxy.setMinimumSize(QtCore.QSize(25, 25))
-        self.btn_proxy.setMaximumSize(QtCore.QSize(25, 25))
-        self.gridLayout.addWidget(self.btn_proxy, 1, 2, 1, 1)
-        self.label_4 = QtWidgets.QLabel(self.general_group)
-        self.label_4.setObjectName(u"label_4")
-        self.gridLayout.addWidget(self.label_4, 3, 0, 1, 1)
-        self.slider_thumbnail_size = QtWidgets.QSlider(self.general_group)
-        self.slider_thumbnail_size.setObjectName(u"slider_thumbnail_size")
-        self.slider_thumbnail_size.setMinimumSize(QtCore.QSize(0, 25))
-        self.slider_thumbnail_size.setMaximumSize(QtCore.QSize(200, 25))
-        self.slider_thumbnail_size.setMinimum(1)
-        self.slider_thumbnail_size.setMaximum(10)
-        self.slider_thumbnail_size.setOrientation(QtCore.Qt.Horizontal)
-        self.gridLayout.addWidget(self.slider_thumbnail_size, 6, 1, 1, 1)
-        self.horizontalLayout.addLayout(self.gridLayout)
-        self.verticalLayout_2.addWidget(self.general_group)
-        self.verticalLayout.addWidget(self.frame)
-        self.frame_2 = QtWidgets.QFrame(self)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.frame_2)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalSpacer_3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                        QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
-        self.btn_settings_apply = QtWidgets.QPushButton(self.frame_2)
-        self.btn_settings_apply.setObjectName(u"btn_settings_apply")
-        self.btn_settings_apply.setMinimumSize(QtCore.QSize(100, 25))
-        self.btn_settings_apply.setMaximumSize(QtCore.QSize(100, 25))
-        self.horizontalLayout_4.addWidget(self.btn_settings_apply)
-        self.btn_settings_reset = QtWidgets.QPushButton(self.frame_2)
-        self.btn_settings_reset.setObjectName(u"btn_settings_reset")
-        self.btn_settings_reset.setMinimumSize(QtCore.QSize(100, 25))
-        self.btn_settings_reset.setMaximumSize(QtCore.QSize(100, 25))
-        self.horizontalLayout_4.addWidget(self.btn_settings_reset)
-        self.horizontalSpacer_4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding,
-                                                        QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_4.addItem(self.horizontalSpacer_4)
-        self.verticalLayout.addWidget(self.frame_2)
-        self.verticalSpacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-                                                    QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(self.verticalSpacer)
+    def __init__(self):
+        super().__init__()
 
-        self.general_group.setTitle("General")
-        self.label_7.setText("Thumbnail Size")
-        self.label_3.setText("Json")
-        self.label_6.setText("Proxy resolution")
-        self.label_2.setText("Proxy")
-        self.label_4.setText("     No. of Threads")
-        self.btn_settings_apply.setText("Apply")
-        self.btn_settings_reset.setText("Reset")
+        self.__vLayout = QtWidgets.QVBoxLayout(self)
+        self.preferences_grp = _preferences_grp_ui.Preferences()
+        self.vSpacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
 
-    def _set_widget_connections(self):
-        self.btn_settings_reset.cliked.connect(self.on_reset_preferences)
-        self.btn_settings_apply.clicked.connect(self.on_apply_preferences)
+        self.__vLayout.addWidget(self.preferences_grp)
+        self.__vLayout.addItem(self.vSpacer)
 
-    def on_reset_preferences(self) -> None:
-        self.on_reset.emit()
+        self.hide()
 
-    def on_apply_preferences(self) -> None:
-        data = {'proxy': self.lineEdit_proxy.text().strip(),
-                'data': self.lineEdit_data_json.text().strip(),
-                'thread_count': str(self.lineEdit_threads.text().strip()),
-                'res_width': str(self.lineEdit_proxy_resolution_width.text().strip()),
-                'res_height': str(self.lineEdit_proxy_resolution_height.text().strip()),
-                'thumbnail': str(self.slider_thumbnail_size.value())}
+        self._set_widget_connection()
 
-        self.on_apply.emit(data)
+    def _set_widget_connection(self):
+        self.preferences_grp.btn_close.clicked.connect(self.close)
 
-    def update_preferences_on_ui(self, data: dict) -> None:
-        self.lineEdit_proxy.setText(data.get('proxy') if data.get('proxy') else '')
-        self.lineEdit_data_json.setText(data.get('data') if data.get('data') else '')
-        self.lineEdit_threads.setText(int(data.get('thread_count')) if data.get('thread_count') else '')
-        self.lineEdit_proxy_resolution_width.setText(int(data.get('res_width')) if data.get('res_width') else '')
-        self.lineEdit_proxy_resolution_height.setText(int(data.get('res_height')) if data.get('res_height') else '')
-        self.slider_thumbnail_size.setValue(int(data.get('thumbnail')) if data.get('thumbnail') else '')
+    def close(self):
+        print('dsfsdf')
+        self.toggle_widget_visibility()
+        self.on_close.emit()
+
+    def toggle_widget_visibility(self):
+        """
+        toggle settings widget visibility
+
+        :return: None
+        :rtype: None
+        """
+        self.hide() if self.isVisible() else self.show()
 
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    s = Preferences()
-    s.show()
-    app.exec_()
 
+    cm = SettingsUI()
+    cm.show()
+
+    app.exec_()

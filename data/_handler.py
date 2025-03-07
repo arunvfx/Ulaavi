@@ -1,9 +1,15 @@
+# -------------------------------- built-in Modules ----------------------------------
 import configparser
 import json
 import os
 import re
 from abc import abstractmethod, ABC
 from pathlib import Path
+
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+
+# -------------------------------- Custom Modules ------------------------------------
 
 
 def make_directory(path: Path) -> None:
@@ -87,9 +93,7 @@ class DataJson(JsonHandler):
                 self.__data[data_type][category_grp] = {}
 
             elif category:
-                if not data:
-                    data = {}
-                self.__data[data_type][category_grp][category] = data
+                self.__data[data_type][category_grp][category] = data if data else {}
 
         elif data_type == 'tags':
             if not tag:
@@ -153,19 +157,18 @@ class DataJson(JsonHandler):
         :return: None
         :rtype: None
         """
-        data = {"data": {group_name: {}}, "tags": self.__data.get('tags')}
+        duplicate_data = {}
 
         for category, value in self.__data["data"][group_name].items():
-            if re.match(r"^%s(\|.*)?$" % category_to_replace.replace('|', '\|'), category) is None:
-                data["data"][group_name][category] = value
-                continue
+            if re.match(r"^%s(\|.*)?$" % category_to_replace.replace('|', '\|'), category):
+                renamed_category = category.replace(category_to_replace, category_to_update)
+                duplicate_data[renamed_category] = value
 
-            renamed_category = category.replace(category_to_replace, category_to_update)
-            print(data)
-            data["data"][group_name][renamed_category] = value
+            else:
+                duplicate_data[category] = value
 
-        self.serialize(data)
-
+        self.__data["data"][group_name] = duplicate_data
+        self.serialize(self.__data)
         self.refresh_data()
 
     def refresh_data(self):
@@ -249,8 +252,8 @@ class Preferences:
         self._write_preferences()
         self._update_attributes()
 
-    def reset(self):
-        self._default_values()
+    def write_default_values(self):
+        self.config['SETTINGS'] = self.default_values()
         self._write_preferences()
         make_directory(Path(self.config['SETTINGS'].get('proxy')))
         make_directory(Path(self.config['SETTINGS'].get('data')).parent)
@@ -260,7 +263,7 @@ class Preferences:
 
     def _update_attributes(self):
         if not self.__preferences_file.is_file():
-            self.reset()
+            self.write_default_values()
 
         preferences = self._read_preferences()
 
@@ -271,13 +274,13 @@ class Preferences:
         self.res_height = int(preferences.get('res_height'))
         self.thumbnail = int(preferences.get('thumbnail'))
 
-    def _default_values(self):
-        self.config['SETTINGS'] = {'proxy': f'{self.__rootPath}/proxy',
-                                   'data': f'{self.__rootPath}/data.json',
-                                   'thread_count': '4',
-                                   'res_width': '520',
-                                   'res_height': '300',
-                                   'thumbnail': '1'}
+    def default_values(self):
+        return {'proxy': f'{self.__rootPath}/proxy',
+                'data': f'{self.__rootPath}/data.json',
+                'thread_count': '4',
+                'res_width': '520',
+                'res_height': '300',
+                'thumbnail': '1'}
 
     def _write_preferences(self):
         make_directory(self.__preferences_file.parent)

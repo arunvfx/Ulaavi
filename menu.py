@@ -1,6 +1,11 @@
+# -------------------------------- built-in Modules ----------------------------------
+
+# ------------------------------- ThirdParty Modules ---------------------------------
 import nuke
-from main import *
 from nukescripts import panels
+
+# -------------------------------- Custom Modules ------------------------------------
+from main import *
 
 
 menu = nuke.menu('Nuke').addMenu('thEdge')

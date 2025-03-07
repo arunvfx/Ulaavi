@@ -1,16 +1,21 @@
-from . import _handler
+# -------------------------------- built-in Modules ----------------------------------
 from typing import Generator
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+
+# -------------------------------- Custom Modules ------------------------------------
+from . import _handler
 
 
 class Data:
     __instance = None
 
-    @staticmethod
-    def get_instance():
-        if Data.__instance is None:
-            Data.__instance = Data()
-
-        return Data.__instance
+    # @staticmethod
+    # def get_instance():
+    #     if Data.__instance is None:
+    #         Data.__instance = Data()
+    #
+    #     return Data.__instance
 
     def __init__(self):
         self.preferences = _handler.Preferences()
@@ -57,7 +62,6 @@ class Data:
         :rtype: None
         """
         self.data_obj.add_key(category_grp=group_name, category=category)
-        print(self.__data)
 
     def rename_category(self, group_name: str, old_category: str, category: str) -> None:
         """
@@ -73,6 +77,7 @@ class Data:
         :rtype: None
         """
         self.data_obj.update_key(group_name, old_category, category)
+        # self.__data[group_name][category] = self.__data[group_name].pop(old_category)
 
     def remove_category(self, group_name: str, category: str):
         """
@@ -86,6 +91,22 @@ class Data:
         :rtype: None
         """
         self.data_obj.remove_key(category_grp=group_name, category_key=category)
+
+    def categories(self, group_name: str):
+        """
+        get categories of given group.
+
+        :param group_name: group name
+        :type group_name: str
+        :return: categories
+        :rtype: Generator
+        """
+        data = self.__data.get(group_name)
+        if not data:
+            return
+
+        for category, _ in self.__data.get(group_name).items():
+            yield category
 
     @property
     def tags(self):

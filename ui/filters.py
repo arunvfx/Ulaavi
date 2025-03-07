@@ -1,10 +1,19 @@
-from PySide2 import QtWidgets, QtCore
+# -------------------------------- built-in Modules ----------------------------------
+
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets, QtCore
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets, QtCore
+
+
+# -------------------------------- Custom Modules ------------------------------------
 
 
 class Filters(QtWidgets.QFrame):
 
-    def __init__(self, parent = None):
-        super().__init__(parent) 
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
         self.hLayout = QtWidgets.QHBoxLayout(self)
 
@@ -25,6 +34,3 @@ if __name__ == '__main__':
     a = Filters()
     a.show()
     app.exec_()
-
-
-        

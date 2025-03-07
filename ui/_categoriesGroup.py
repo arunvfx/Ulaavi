@@ -1,6 +1,12 @@
-import sys
+# -------------------------------- built-in Modules ----------------------------------
 
-from PySide2 import QtWidgets, QtCore
+# ------------------------------- ThirdParty Modules ---------------------------------
+try:
+    from PySide2 import QtWidgets, QtCore
+except ModuleNotFoundError:
+    from PySide6 import QtWidgets, QtCore
+
+# -------------------------------- Custom Modules ------------------------------------
 from . import commonWidgets
 
 
