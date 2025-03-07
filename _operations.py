@@ -48,3 +48,8 @@ class Operations:
 
     def on_reset_preferences(self):
         self.ui.settings.preferences_grp.update_pref_ui(self.data.preferences.default_values())
+
+    def on_apply_preferences(self, data: dict):
+        self.data.preferences.update(data)
+        self.data.refresh()
+        self.execute_on_startup()

@@ -34,7 +34,7 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         self.categories.tree.on_create.connect(self.__ops.on_add_category)
         self.settings.preferences_grp.on_reset.connect(self.__ops.on_reset_preferences)
         self.actions_ui.on_settings.connect(self.__ops.on_open_settings)
-
+        self.settings.preferences_grp.on_apply.connect(self.__ops.on_apply_preferences)
 
     def event(self, event):
         if event.type() == QtCore.QEvent.Type.Show:

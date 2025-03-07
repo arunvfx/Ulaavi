@@ -19,6 +19,7 @@ class Data:
 
     def __init__(self):
         self.preferences = _handler.Preferences()
+        print(self.preferences.data_file)
         self.data_obj = _handler.DataJson(self.preferences.data_file)
         self.__data = self.data_obj.data
         self.__tags = self.data_obj.tags
@@ -77,7 +78,6 @@ class Data:
         :rtype: None
         """
         self.data_obj.update_key(group_name, old_category, category)
-        # self.__data[group_name][category] = self.__data[group_name].pop(old_category)
 
     def remove_category(self, group_name: str, category: str):
         """
@@ -127,6 +127,11 @@ class Data:
         :rtype: bool
         """
         return self.data_obj.is_category_item_exists(group_name, category)
+
+    def refresh(self):
+        self.data_obj.json_file = self.preferences.data_file
+        self.data_obj.refresh_data()
+        self.__data = self.data_obj.data
 
 
 if __name__ == '__main__':

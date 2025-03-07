@@ -100,5 +100,6 @@ class CategoriesGroup(QtWidgets.QFrame):
         :return: None
         :rtype: None
         """
+        self.cmb_group.clear()
         for group in groups:
             self.cmb_group.addItem(group)

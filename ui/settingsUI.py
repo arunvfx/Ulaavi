@@ -19,20 +19,18 @@ class SettingsUI(QtWidgets.QWidget):
 
         self.__vLayout = QtWidgets.QVBoxLayout(self)
         self.preferences_grp = _preferences_grp_ui.Preferences()
-        self.vSpacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-
+        self.vSpacer = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.__vLayout.addWidget(self.preferences_grp)
         self.__vLayout.addItem(self.vSpacer)
 
         self.hide()
-
         self._set_widget_connection()
 
     def _set_widget_connection(self):
         self.preferences_grp.btn_close.clicked.connect(self.close)
 
     def close(self):
-        print('dsfsdf')
         self.toggle_widget_visibility()
         self.on_close.emit()
 
@@ -44,12 +42,3 @@ class SettingsUI(QtWidgets.QWidget):
         :rtype: None
         """
         self.hide() if self.isVisible() else self.show()
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-
-    cm = SettingsUI()
-    cm.show()
-
-    app.exec_()

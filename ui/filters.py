@@ -26,11 +26,3 @@ class Filters(QtWidgets.QFrame):
         self.hLayout.addWidget(self.lbl_tags)
         self.hLayout.addWidget(self.cmb_tags)
         self.hLayout.addWidget(self.lineEdit_search)
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-
-    a = Filters()
-    a.show()
-    app.exec_()

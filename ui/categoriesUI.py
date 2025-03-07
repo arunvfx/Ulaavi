@@ -46,7 +46,6 @@ class Categories(QtWidgets.QFrame):
             self.tree.setEnabled(False)
         else:
             self.tree.setEnabled(True)
-
         self.tree.root_item()
         self._update_tree_group_attribute(group_name)
 

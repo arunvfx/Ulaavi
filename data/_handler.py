@@ -4,7 +4,6 @@ import json
 import os
 import re
 from abc import abstractmethod, ABC
-from pathlib import Path
 
 
 # ------------------------------- ThirdParty Modules ---------------------------------
@@ -12,12 +11,12 @@ from pathlib import Path
 # -------------------------------- Custom Modules ------------------------------------
 
 
-def make_directory(path: Path) -> None:
-    if not Path:
+def make_directory(path: str) -> None:
+    if not path:
         return
 
-    if path.is_dir() is False:
-        path.mkdir(exist_ok=True)
+    if os.path.isdir(path) is False:
+        os.makedirs(path)
 
 
 class JsonHandler(ABC):
@@ -26,20 +25,20 @@ class JsonHandler(ABC):
     """
 
     @abstractmethod
-    def __init__(self, json_file):
-        self.json_file = Path(json_file)
+    def __init__(self, json_file: str):
+        self.json_file = json_file
 
-        make_directory(self.json_file.parent)
-        if os.path.isfile(self.json_file) is False:
-            self.serialize(data={"data": {}, "tags": []})
+        if not self.json_file:
+            raise IOError('No valid json file assigned!')
 
     def serialize(self, data: dict) -> None:
         """
         Dump data into json
         :param data:
-        :param json_file:
         :return:
         """
+        make_directory(os.path.dirname(self.json_file))
+
         with open(self.json_file, 'w') as file_:
             json.dump(data, file_)
 
@@ -58,10 +57,14 @@ class DataJson(JsonHandler):
     """
 
     def __init__(self, json_file: str) -> None:
-        self.data_file = json_file
-        JsonHandler.__init__(self, self.data_file)
+        JsonHandler.__init__(self, json_file)
 
+        self.create_default_json()
         self.__data = self.deserialize()
+
+    def create_default_json(self):
+        if os.path.isfile(self.json_file) is False:
+            self.serialize(data={"data": {}, "tags": []})
 
     def add_key(self,
                 category_grp: str = '',
@@ -82,7 +85,7 @@ class DataJson(JsonHandler):
         :return:
         """
 
-        if not self.data_file:
+        if not self.json_file:
             raise Exception('No Valid Json file found!, cannot serialize data!')
 
         if data_type == 'data':
@@ -171,7 +174,12 @@ class DataJson(JsonHandler):
         self.serialize(self.__data)
         self.refresh_data()
 
-    def refresh_data(self):
+    def refresh_data(self, json_file: str = ''):
+        if json_file:
+            self.json_file = json_file
+
+        self.create_default_json()
+
         self.__data = self.deserialize()
 
     @property
@@ -233,8 +241,8 @@ class Preferences:
 
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.__rootPath = f'{Path.home()}/Documents/ulaavi'.replace('\\', '/')
-        self.__preferences_file = Path(f'{self.__rootPath}/preferences.ini')
+        self.__rootPath = f'{os.path.expanduser("~")}/Documents/ulaavi'.replace('\\', '/')
+        self.__preferences_file = f'{self.__rootPath}/preferences.ini'
 
         self.proxy = None
         self.data_file = None
@@ -255,14 +263,16 @@ class Preferences:
     def write_default_values(self):
         self.config['SETTINGS'] = self.default_values()
         self._write_preferences()
-        make_directory(Path(self.config['SETTINGS'].get('proxy')))
-        make_directory(Path(self.config['SETTINGS'].get('data')).parent)
+        self._update_attributes()
+
+        make_directory(self.config['SETTINGS'].get('proxy'))
+        make_directory(os.path.dirname(self.config['SETTINGS'].get('data')))
 
     def get(self, key: str):
         return self.config['SETTINGS'].get(key)
 
     def _update_attributes(self):
-        if not self.__preferences_file.is_file():
+        if not os.path.isfile(self.__preferences_file):
             self.write_default_values()
 
         preferences = self._read_preferences()
@@ -283,7 +293,7 @@ class Preferences:
                 'thumbnail': '1'}
 
     def _write_preferences(self):
-        make_directory(self.__preferences_file.parent)
+        make_directory(os.path.dirname(self.__preferences_file))
 
         with open(self.__preferences_file, 'w') as configfile:
             self.config.write(configfile)

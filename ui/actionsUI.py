@@ -94,11 +94,3 @@ class Filters(QtWidgets.QFrame):
 
     def add_tags(self, tags: list or tuple) -> None:
         self.cmb_tags.addItems(tags)
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-
-    a = ActionsUI()
-    a.show()
-    app.exec_()
