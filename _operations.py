@@ -47,4 +47,4 @@ class Operations:
         self.ui.settings.preferences_grp.update_pref_ui(self.data.preferences)
 
     def on_reset_preferences(self):
-        default_values = self.data.preferences.default_values()
+        self.ui.settings.preferences_grp.update_pref_ui(self.data.preferences.default_values())
