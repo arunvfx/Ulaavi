@@ -75,12 +75,3 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
         return file_browser.getExistingDirectory(
             self, "Select Directory", "",
             options=QtWidgets.QFileDialog.DontUseNativeDialog)
-
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication([])
-
-    cm = Preferences()
-    cm.show()
-
-    app.exec_()
