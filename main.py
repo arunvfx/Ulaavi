@@ -20,6 +20,8 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.resize(1400, 700)
+
         self.__ops = _operations.Operations(self)
         self._widget_connections()
         self.__ops.execute_on_startup()
@@ -35,6 +37,9 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         self.settings.preferences_grp.on_reset.connect(self.__ops.on_reset_preferences)
         self.actions_ui.on_settings.connect(self.__ops.on_open_settings)
         self.settings.preferences_grp.on_apply.connect(self.__ops.on_apply_preferences)
+        self.thumbnail.on_drop.connect(self.__ops.on_file_drop)
+        self.thumbnail.on_drop_convert_mov.connect(self.__ops.on_drop_convert_to_mov)
+        self.__ops.render_signals.on_render_completed.connect(self.thumbnail.on_render_completed)
 
     def event(self, event):
         if event.type() == QtCore.QEvent.Type.Show:

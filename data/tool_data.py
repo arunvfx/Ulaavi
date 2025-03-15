@@ -109,7 +109,13 @@ class Data:
             yield category
 
     @property
-    def tags(self):
+    def tags(self) -> list:
+        """
+        get tags
+
+        :return: tags list
+        :rtype: list
+        """
         return self.__tags
 
     def add_tags(self, tag):
@@ -132,7 +138,3 @@ class Data:
         self.data_obj.json_file = self.preferences.data_file
         self.data_obj.refresh_data()
         self.__data = self.data_obj.data
-
-
-if __name__ == '__main__':
-    d = Data()

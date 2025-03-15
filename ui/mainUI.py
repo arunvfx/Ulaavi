@@ -15,6 +15,7 @@ class MainUI:
         if not mainWidget.objectName():
             mainWidget.setObjectName("Ulaavi")
 
+
         self.categories = categoriesUI.Categories()
         self.actions_ui = actionsUI.ActionsUI()
         self.thumbnail = thumbnailUI.ThumbnailUI()
