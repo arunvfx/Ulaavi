@@ -6,9 +6,16 @@ def convert_video(source_file: str,
     """
     Convert video file to mov conversion command.
     """
+    # output_file = output_file.replace('.mov', '.mp4')
     return ["ffmpeg",
             "-i",
             source_file,
+            "-vcodec",
+            "libx264",
+            "-pix_fmt",
+            "yuvj420p",
+            "-profile:v",
+            "baseline",
             "-vf",
             f"scale={resolutionX}:{resolutionY}:force_original_aspect_ratio=decrease",
             "-r",
@@ -33,6 +40,12 @@ def convert_image_sequence(source_file: str,
             start_frame,
             "-i",
             _input,
+            "-vcodec",
+            "libx264",
+            "-pix_fmt",
+            "yuvj420p",
+            "-profile:v",
+            "baseline",
             "-vf",
             f"scale={resolutionX}:{resolutionY}:force_original_aspect_ratio=decrease",
             "-r",
@@ -41,7 +54,7 @@ def convert_image_sequence(source_file: str,
             "-hide_banner"]
 
 
-def convert_image(source_file: str, output_file: str, resolution: tuple):
+def convert_image(source_file: str, output_file: str, resolutionX: int, resolutionY: int):
     """
     image with any format to png conversion.
     """
@@ -49,7 +62,7 @@ def convert_image(source_file: str, output_file: str, resolution: tuple):
             "-i",
             source_file,
             "-vf",
-            f"scale={resolution[0]}:{resolution[1]}",
+            f"scale={resolutionX}:{resolutionY}:force_original_aspect_ratio=decrease",
             output_file,
             "-hide_banner"]
 
@@ -70,17 +83,21 @@ def extract_video_thumbnail_frame(source_file: str):
             "-hide_banner"]
 
 
-def extract_image_from_video(source_file: str, output_file: str, resolution: tuple, time: float) -> list:
+def extract_image_from_video(source_file: str,
+                             output_file: str,
+                             resolutionX: int,
+                             resolutionY: int,
+                             time: float) -> list:
     return ["ffmpeg",
             "-ss",
-            f"{round(time)}",
+            f"{time}",
             "-i",
             source_file,
             "-pix_fmt",
-            "rgb24",
+            "yuvj420p",
             "-frames",
             "1",
             "-vf",
-            f"scale={resolution[0]}:{resolution[1]}:force_original_aspect_ratio=decrease",
+            f"scale={resolutionX}:{resolutionY}:force_original_aspect_ratio=decrease",
             output_file,
             "-hide_banner"]

@@ -91,15 +91,14 @@ class CategoriesGroup(QtWidgets.QFrame):
         """
         return self.cmb_group.currentText()
 
-    def add_groups(self, groups) -> None:
+    def add_groups(self, groups: tuple) -> None:
         """
         add groups to QComboBox.
 
         :param groups: list of groups
-        :type groups: list
+        :type groups: tuple
         :return: None
         :rtype: None
         """
         self.cmb_group.clear()
-        for group in groups:
-            self.cmb_group.addItem(group)
+        self.cmb_group.addItems(sorted(groups))

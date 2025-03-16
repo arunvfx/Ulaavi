@@ -66,12 +66,12 @@ class DataJson(JsonHandler):
         if os.path.isfile(self.json_file) is False:
             self.serialize(data={"data": {}, "tags": []})
 
-    def add_key(self,
-                category_grp: str = '',
-                category: str = '',
-                data: dict or None = None,
-                data_type: str = 'data',
-                tag: str = '') -> None:
+    def update_data(self,
+                    category_grp: str = '',
+                    category: str = '',
+                    data: dict or None = None,
+                    data_type: str = 'data',
+                    tag: str = '') -> None:
         """
         serialize data to json
 
@@ -95,8 +95,11 @@ class DataJson(JsonHandler):
             if category_grp and not category:
                 self.__data[data_type][category_grp] = {}
 
-            elif category:
-                self.__data[data_type][category_grp][category] = data if data else {}
+            elif category and data:
+                self.__data[data_type][category_grp][category].append(data)
+
+            elif category and not data:
+                self.__data[data_type][category_grp][category] = []
 
         elif data_type == 'tags':
             if not tag:

@@ -19,7 +19,6 @@ class Data:
 
     def __init__(self):
         self.preferences = _handler.Preferences()
-        print(self.preferences.data_file)
         self.data_obj = _handler.DataJson(self.preferences.data_file)
         self.__data = self.data_obj.data
         self.__tags = self.data_obj.tags
@@ -46,7 +45,7 @@ class Data:
         :return: None
         :rtype: None
         """
-        self.data_obj.add_key(category_grp=group_name)
+        self.data_obj.update_data(category_grp=group_name)
 
     def remove_group(self, group: str):
         self.data_obj.remove_key(category_grp=group)
@@ -62,7 +61,7 @@ class Data:
         :return: None
         :rtype: None
         """
-        self.data_obj.add_key(category_grp=group_name, category=category)
+        self.data_obj.update_data(category_grp=group_name, category=category)
 
     def rename_category(self, group_name: str, old_category: str, category: str) -> None:
         """
@@ -108,6 +107,13 @@ class Data:
         for category, _ in self.__data.get(group_name).items():
             yield category
 
+    def add_thumbnail_data(self, source_file, proxy_file, metadata, group, category):
+        data = {'proxy': proxy_file, 'source': source_file, 'metadata': metadata, 'tags': []}
+        self.data_obj.update_data(category_grp=group, category=category, data=data)
+
+    def thumbnail_data(self, group: str, category: str) -> list:
+        return self.data_obj.data[group].get(category)
+
     @property
     def tags(self) -> list:
         """
@@ -119,7 +125,7 @@ class Data:
         return self.__tags
 
     def add_tags(self, tag):
-        self.data_obj.add_key(data_type='tags', tag=tag)
+        self.data_obj.update_data(data_type='tags', tag=tag)
 
     def is_category_exists(self, group_name: str, category: str) -> bool:
         """

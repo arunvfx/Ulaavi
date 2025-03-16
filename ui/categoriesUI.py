@@ -49,6 +49,7 @@ class Categories(QtWidgets.QFrame):
         self.tree.root_item()
         self._update_tree_group_attribute(group_name)
 
+
     def _update_tree_group_attribute(self, group_name: str):
         """
         update current group attribute in treeWidget class.
