@@ -286,6 +286,27 @@ class Preferences:
 
         self._update_attributes()
 
+    def _update_attributes(self):
+        if not os.path.isfile(self.__preferences_file):
+            self.write_default_values()
+
+        preferences = self._read_preferences()
+
+        self.proxy = preferences.get('proxy')
+        self.data_file = preferences.get('data')
+        self.thread_count = int(preferences.get('thread_count'))
+        self.res_width = int(preferences.get('res_width'))
+        self.res_height = int(preferences.get('res_height'))
+        self.thumbnail = int(preferences.get('thumbnail'))
+
+    def preferences(self):
+        return {'proxy': self.proxy,
+                'data': self.data_file,
+                'thread_count': str(self.thread_count),
+                'res_width': str(self.res_width),
+                'res_height': str(self.res_height),
+                'thumbnail': self.thumbnail}
+
     def update(self, data: dict):
         for key, value in data.items():
             self.config['SETTINGS'][key] = value
@@ -304,19 +325,6 @@ class Preferences:
     def get(self, key: str):
         return self.config['SETTINGS'].get(key)
 
-    def _update_attributes(self):
-        if not os.path.isfile(self.__preferences_file):
-            self.write_default_values()
-
-        preferences = self._read_preferences()
-
-        self.proxy = preferences.get('proxy')
-        self.data_file = preferences.get('data')
-        self.thread_count = int(preferences.get('thread_count'))
-        self.res_width = int(preferences.get('res_width'))
-        self.res_height = int(preferences.get('res_height'))
-        self.thumbnail = int(preferences.get('thumbnail'))
-
     def default_values(self):
         return {'proxy': f'{self.__rootPath}/proxy',
                 'data': f'{self.__rootPath}/data.json',
@@ -334,9 +342,3 @@ class Preferences:
     def _read_preferences(self):
         self.config.read(self.__preferences_file)
         return self.config['SETTINGS']
-
-
-if __name__ == '__main__':
-    p = Preferences()
-    print(p.proxy)
-    print(p.get('data'))

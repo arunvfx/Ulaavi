@@ -151,7 +151,7 @@ class Operations:
         self.data.remove_tag(group, category, source_files, tag)
 
     def on_open_settings(self):
-        self.op_signals.on_open_settings.emit(self.data.preferences)
+        self.op_signals.on_open_settings.emit(self.data.preferences.preferences())
         self.op_signals.update_status.emit(f'Settings Panel')
 
     def on_reset_preferences(self):

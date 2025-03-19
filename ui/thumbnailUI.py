@@ -13,7 +13,7 @@ except ModuleNotFoundError:
     from PySide6.QtGui import QAction, QIcon, QDrag
 
 # -------------------------------- Custom Modules ------------------------------------
-import conversion
+from conversion.convert_mov import Signals
 from . import _thumbnail
 from data import config
 from . import commonWidgets
@@ -176,13 +176,16 @@ class ThumbnailUI(QTableWidget):
             tags_action.triggered.connect(lambda chk=False, item=i: self._add_tags(item))
             add_tags_menu.addAction(tags_action)
 
-        remove_tag_menu = QMenu(menu)
-        remove_tag_menu.setTitle('Revove Tag')
-        menu.addMenu(remove_tag_menu)
-        for i in self.__tags:
-            tags_action = QAction(i, menu)
-            tags_action.triggered.connect(lambda chk=False, item=i: self._remove_tag(item))
-            remove_tag_menu.addAction(tags_action)
+
+        added_tags = [tag for item in self.selectedItems() for tag in item.data(Qt.UserRole)['tags'] if tag]
+        if added_tags:
+            remove_tag_menu = QMenu(menu)
+            remove_tag_menu.setTitle('Revove Tag')
+            menu.addMenu(remove_tag_menu)
+            for tag in added_tags:
+                tags_action = QAction(tag, menu)
+                tags_action.triggered.connect(lambda chk=False, item=i: self._remove_tag(tag))
+                remove_tag_menu.addAction(tags_action)
 
         menu.addSeparator()
 
@@ -203,6 +206,7 @@ class ThumbnailUI(QTableWidget):
 
     def _add_tags(self, tag):
         selected_source_files = [item.data(Qt.UserRole)['source'] for item in self.selectedItems()]
+        self._update_tag_in_overlay_label(tag)
         self.on_add_tag.emit(self.current_group, self.current_category, selected_source_files, tag)
 
     def _remove_tag(self, tag):
@@ -228,8 +232,16 @@ class ThumbnailUI(QTableWidget):
             self.current_category,
             [item.data(Qt.UserRole).get('source') for item in self.selectedItems()])
 
+    def _update_tag_in_overlay_label(self, tag):
+        for item in self.selectedItems():
+            widget = self.cellWidget(item.row(), item.column())
+            user_data= item.data(Qt.UserRole)
+            user_data['tags'].append(tag)
+            item.setData(Qt.UserRole, user_data)
+            widget.set_metadata_overlay(user_data['metadata'], user_data['tags'])
+
+
     def start_thread(self, runnable_object):
-        # t = ctypes.cast(id(runnable_object), ctypes.py_object).value
         self.__threadpool.start(runnable_object)
 
     def dropped_data(self, dropped_files: list):

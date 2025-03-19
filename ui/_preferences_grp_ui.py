@@ -52,6 +52,7 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
         self.on_apply.emit(data)
 
     def update_pref_ui(self, data: dict) -> None:
+        print(data)
         self.lineEdit_proxy.setText(data.get('proxy') if data.get('proxy') else '')
         self.lineEdit_json.setText(data.get('data') if data.get('data') else '')
         self.lineEdit_thread_count.setText(data.get('thread_count') if data.get('thread_count') else '')

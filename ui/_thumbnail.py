@@ -1,6 +1,5 @@
 # -------------------------------- built-in Modules ----------------------------------
 import os
-from pathlib import Path
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 try:
@@ -15,8 +14,10 @@ from . import _preview_proxy
 class ThumbnailOverlay(QtWidgets.QFrame):
     def __init__(self, width, height, parent=None):
         super().__init__(parent)
-        # self.setAlignment(QtCore.Qt.AlignCenter)
         self.setStyleSheet("background: transparent;color: #cacaca;")
+        self.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.setFrameShadow(QtWidgets.QFrame.Plain)
+
 
         self.overlay_label = QtWidgets.QLabel(self)
 

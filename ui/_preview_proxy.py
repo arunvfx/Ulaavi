@@ -30,7 +30,8 @@ class ProxyPreview(QtWidgets.QWidget):
         self.progress_bar.setValue(0)
         self.progress_bar.setFixedHeight(5)
         self.progress_bar.setTextVisible(False)
-        self.progress_bar.setStyleSheet("QProgressBar::chunk{background-color: #232323;}")
+        self.progress_bar.setStyleSheet("QProgressBar::chunk{background-color: #232323;} "
+                                        "QProgressBar{border: 0; background-color: transparent;}")
 
         self.__vLayout.addWidget(self.video_label)
         self.__vLayout.addWidget(self.progress_bar)

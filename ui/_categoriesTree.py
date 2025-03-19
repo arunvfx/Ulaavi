@@ -97,7 +97,6 @@ class CategoriesTree(QtWidgets.QTreeWidget):
         self.setColumnCount(1)
         self.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.header().setVisible(False)
         self.header().setDefaultSectionSize(50)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
