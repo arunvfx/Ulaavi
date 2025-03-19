@@ -71,7 +71,8 @@ class DataJson(JsonHandler):
                     category: str = '',
                     data: dict or None = None,
                     data_type: str = 'data',
-                    tag: str = '') -> None:
+                    tag: str = '',
+                    source_files: list = None) -> None:
         """
         serialize data to json
 
@@ -82,6 +83,8 @@ class DataJson(JsonHandler):
         :param category_grp:
         :param category:
         :param data:
+        :param source_files:
+        :type source_files:
         :return:
         """
 
@@ -92,14 +95,24 @@ class DataJson(JsonHandler):
             if not category_grp:
                 raise KeyError('"category_grp" is must for data type "data"!')
 
-            if category_grp and not category:
+            if not category:
                 self.__data[data_type][category_grp] = {}
 
-            elif category and data:
+            elif category and data and not tag:
                 self.__data[data_type][category_grp][category].append(data)
 
-            elif category and not data:
+            elif category and not data and not tag:
                 self.__data[data_type][category_grp][category] = []
+
+            elif category and source_files and tag:
+                items = self.__data[data_type][category_grp][category]
+                for index, item in enumerate(items):
+
+                    for source_file in source_files:
+                        if item['source'] != source_file or tag in item['tags']:
+                            continue
+
+                        item['tags'].append(tag)
 
         elif data_type == 'tags':
             if not tag:
@@ -108,6 +121,23 @@ class DataJson(JsonHandler):
             if tag not in self.__data['tags']:
                 self.__data[data_type].append(tag)
 
+        self.serialize(self.__data)
+
+    def remove_data(self, group: str, category: str, source_files: list, tag: str = None):
+        items = []
+
+        for data in self.__data['data'][group][category]:
+            if data.get('source') in source_files and tag is None:
+                continue
+
+            if tag and tag in data['tags']:
+                data['tags'].remove(tag)
+                items.append(data)
+                continue
+
+            items.append(data)
+
+        self.__data['data'][group][category] = items
         self.serialize(self.__data)
 
     def remove_key(self,

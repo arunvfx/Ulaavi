@@ -7,7 +7,6 @@ from nukescripts import panels
 # -------------------------------- Custom Modules ------------------------------------
 from main import *
 
-
 menu = nuke.menu('Nuke').addMenu('thEdge')
 menu.addCommand('Ulaavi', 'main()')
 

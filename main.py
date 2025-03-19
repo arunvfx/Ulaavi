@@ -27,6 +27,7 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         self.execute_on_startup()
 
     def _widget_connections(self):
+
         # update status
         self.__ops.op_signals.update_status.connect(self.status.set_status)
 
@@ -49,16 +50,44 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         # on rename category
         self.categories.tree.on_rename.connect(self.__ops.on_rename_category)
 
-        self.categories.tree.on_change.connect(self.__ops.on_change_category)
+        self.categories.tree.on_change.connect(
+            lambda group, category: self.__ops.on_change_category(
+                group,
+                category,
+                tag=self.actions_ui.filters.current_tag,
+                search_string=self.actions_ui.filters.search_text))
 
         self.settings.preferences_grp.on_reset.connect(self.__ops.on_reset_preferences)
         self.actions_ui.on_settings.connect(self.__ops.on_open_settings)
         self.settings.preferences_grp.on_apply.connect(self.__ops.on_apply_preferences)
         self.thumbnail.on_drop.connect(self.__ops.on_file_drop)
         self.thumbnail.on_drop_convert_mov.connect(self.__ops.convert_to_mov)
-        self.thumbnail.on_context_menu.connect(self.__ops.on_load_tags)
         self.thumbnail.on_open_in_explorer.connect(self.__ops.on_open_in_explorer)
         self.thumbnail.on_recache_proxy.connect(self.__ops.on_recache_proxy)
+        self.thumbnail.on_create_tag.connect(self.__ops.on_create_tag)
+        self.thumbnail.on_add_tag.connect(self.__ops.on_add_tag)
+        self.thumbnail.on_remove_tag.connect(self.__ops.on_remove_tag)
+        self.thumbnail.on_delete_proxy.connect(
+            lambda group, category, source_files: self.__ops.on_delete_proxy(
+                group,
+                category,
+                source_files,
+                self.actions_ui.filters.current_tag,
+                self.actions_ui.filters.search_text)
+        )
+
+        self.actions_ui.filters.on_tags_filter_changed.connect(
+            lambda tag, search_text: self.__ops.on_change_filters(
+                self.categories.group.current_group,
+                self.categories.tree.item_user_role,
+                tag=tag,
+                search_text=search_text))
+        self.actions_ui.filters.on_change_search_text.connect(
+            lambda tag, search_text: self.__ops.on_change_filters(
+                self.categories.group.current_group,
+                self.categories.tree.item_user_role,
+                tag=tag,
+                search_text=search_text))
 
         self.__ops.op_signals.execute_startup.connect(self.execute_on_startup)
         self.__ops.op_signals.on_files_dropped.connect(self.thumbnail.dropped_data)
@@ -72,15 +101,21 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         self.__ops.op_signals.on_render_completed.connect(self.thumbnail.on_render_completed)
         self.__ops.op_signals.on_start_conversion.connect(self.thumbnail.start_thread)
         self.__ops.op_signals.on_load_tags.connect(self.thumbnail.set_tags)
+        self.__ops.op_signals.on_load_tags.connect(self.actions_ui.filters.add_tags)
+        self.__ops.op_signals.on_change_filters.connect(self.thumbnail.load_thumbnails)
+        # self.__ops.op_signals.on_delete_proxy.connect(self.thumbnail.load_thumbnails)
 
     def execute_on_startup(self):
         self.__ops.ui_add_group()
         self.__ops.ui_add_category(self.categories.group.current_group)
-        self.__ops.update_thumbnail_scale()
         self.thumbnail.max_thread_count = int(self.__ops.data.preferences.thread_count)
         self.__ops.update_thumbnail_scale()
+        self.__ops.on_load_tags()
 
     def event(self, event):
+        if not hasattr(event, 'type'):
+            return
+
         if event.type() == QtCore.QEvent.Type.Show:
             try:
                 set_widget_margins(self)
@@ -112,5 +147,7 @@ if __name__ == '__main__':
 
     cm = Ulaavi()
     cm.show()
-
-    app.exec_()
+    try:
+        app.exec()
+    except:
+        app.exec_()

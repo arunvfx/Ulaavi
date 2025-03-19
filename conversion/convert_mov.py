@@ -5,12 +5,13 @@ import json
 import time
 import datetime
 from data import config
+from pathlib import Path
 from . import _commands
 
 try:
     from PySide2.QtCore import QObject, QRunnable, Signal
 except ModuleNotFoundError:
-    from PySide6.QtCore import QObject, QRunnable, Signal
+    from PySide6.QtCore import QObject, QRunnable, Signal, Slot
 
 
 def _get_file_metadata(source_file):
@@ -71,22 +72,24 @@ class ConvertMov(QRunnable):
 
     def run(self):
         _make_directory(self.__output_file)
-
+        print('sdfsfsdf')
         if not self.__is_image_seq and self.__source_file.endswith(config.supported_video_formats):
             thumbnail_frame_time, fps, total_frames, width, height = _get_file_metadata(self.__source_file)
             metadata = {'FPS': float("{:.2f}".format(float(fps))),
-                        'Frames': total_frames,
+                        'Frame(s)': total_frames,
                         'width': width,
-                        'height': height}
+                        'height': height,
+                        'Format': Path(self.__source_file).suffix}
 
             self._convert_video(thumbnail_frame_time, fps, metadata)
 
         elif not self.__is_image_seq and self.__source_file.endswith(config.supported_image_formats):
             thumbnail_frame_time, fps, total_frames, width, height = _get_file_metadata(self.__source_file)
             metadata = {'FPS': float("{:.2f}".format(float(fps))),
-                        'Frames': total_frames,
+                        'Frame(s)': total_frames,
                         'width': width,
-                        'height': height}
+                        'height': height,
+                        'Format': Path(self.__source_file).suffix}
             self._convert_image(self.__source_file, metadata)
 
         elif self.__is_image_seq:
@@ -94,9 +97,10 @@ class ConvertMov(QRunnable):
             start_frame, end_frame = frame_range.split('-')
             thumbnail_frame_time, fps, total_frames, width, height = _get_file_metadata(source_file)
             metadata = {'FPS': float("{:.2f}".format(float(fps))),
-                        'Frames': end_frame,
+                        'Frame(s)': str(int(end_frame) - int(start_frame) + 1),
                         'width': width,
-                        'height': height}
+                        'height': height,
+                        'Format': Path(self.__source_file.rsplit(' ', 1)[0]).suffix}
 
             self._convert_image_sequence(source_file, thumbnail_frame_time, fps, start_frame, metadata)
 
@@ -114,12 +118,14 @@ class ConvertMov(QRunnable):
         thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}.png'
 
         if not os.path.isfile(self.__output_file):
+            print('dfgdfg dfgd')
             command = _commands.convert_video(
                 self.__source_file, self.__output_file, self.__thumb_resolutionX, self.__thumb_resolutionY, fps)
 
             if not self._execute_render_command(command):
                 return
 
+            print('df df fds')
         if self._generate_thumbnail(thumbnail_frame_time, thumbnail_image, self.__source_file):
             self.signals.on_render_completed.emit(self.__output_file, thumbnail_image, metadata)
 
@@ -135,7 +141,8 @@ class ConvertMov(QRunnable):
             if not self._execute_render_command(command):
                 return
 
-        thumbnail_image1 = f'_$$$${datetime.datetime.now().strftime("%M_%S_%f")}_'.join(re.split(r"%\d{2}d", thumbnail_image))
+        thumbnail_image1 = f'_$$$${datetime.datetime.now().strftime("%M_%S_%f")}_'.join(
+            re.split(r"%\d{2}d", thumbnail_image))
         if self._generate_thumbnail(thumbnail_frame_time, thumbnail_image1, source_file):
             os.rename(thumbnail_image1, thumbnail_image)
             self.signals.on_render_completed.emit(self.__output_file, thumbnail_image, metadata)
@@ -160,13 +167,15 @@ class ConvertMov(QRunnable):
         :return: is rendered or not
         :rtype: bool
         """
+        print(command)
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         out, error = process.communicate()
 
         if error and not out:
+            print(error.decode())
             self.signals.on_render_error.emit(str(error.decode()))
             return False
-
+        print('OUR: ', out.decode())
         return True
 
     def _generate_thumbnail(self, thumbnail_frame_time, thumbnail_image, input_file):

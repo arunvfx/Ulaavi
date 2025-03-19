@@ -1,4 +1,5 @@
 # -------------------------------- built-in Modules ----------------------------------
+import os.path
 from typing import Generator
 
 # ------------------------------- ThirdParty Modules ---------------------------------
@@ -8,14 +9,6 @@ from . import _handler
 
 
 class Data:
-    __instance = None
-
-    # @staticmethod
-    # def get_instance():
-    #     if Data.__instance is None:
-    #         Data.__instance = Data()
-    #
-    #     return Data.__instance
 
     def __init__(self):
         self.preferences = _handler.Preferences()
@@ -110,9 +103,25 @@ class Data:
     def add_thumbnail_data(self, source_file, proxy_file, metadata, group, category):
         data = {'proxy': proxy_file, 'source': source_file, 'metadata': metadata, 'tags': []}
         self.data_obj.update_data(category_grp=group, category=category, data=data)
+        return data
 
-    def thumbnail_data(self, group: str, category: str) -> list:
-        return self.data_obj.data[group].get(category)
+    def thumbnail_data(self, group: str, category: str, tag: str = None, search_string: str = None) -> list:
+        if not tag and not search_string:
+            return self.data_obj.data[group].get(category)
+
+        elif tag and not search_string:
+            return [data for data in self.data_obj.data[group].get(category) if tag in data['tags']]
+
+        elif not tag and search_string:
+            return [data for data in self.data_obj.data[group].get(category)
+                    if search_string.lower() in os.path.basename(data['source']).lower()]
+
+        else:
+            return [data for data in self.data_obj.data[group].get(category)
+                    if search_string.lower() in os.path.basename(data['source']).lower() and tag in data['tags']]
+
+    def remove_data(self, group: str, category: str, source_files: list):
+        self.data_obj.remove_data(group=group, category=category, source_files=source_files)
 
     @property
     def tags(self) -> list:
@@ -124,8 +133,15 @@ class Data:
         """
         return self.__tags
 
-    def add_tags(self, tag):
+    def create_tag(self, tag):
         self.data_obj.update_data(data_type='tags', tag=tag)
+        self.__tags.append(tag)
+
+    def add_tag(self, group: str, category: str, source_files: list, tag: str):
+        self.data_obj.update_data(category_grp=group, category=category, source_files=source_files, tag=tag)
+
+    def remove_tag(self, group: str, category: str, source_files: list, tag: str):
+        self.data_obj.remove_data(group=group, category=category, source_files=source_files, tag=tag)
 
     def is_category_exists(self, group_name: str, category: str) -> bool:
         """

@@ -40,6 +40,7 @@ class ActionsUI(QtWidgets.QWidget):
         self.btn_settings.clicked.connect(lambda: self.on_settings.emit())
 
 
+
 class Actions(QtWidgets.QFrame):
     on_snap_script = QtCore.Signal()
     on_refresh = QtCore.Signal()
@@ -70,6 +71,8 @@ class Actions(QtWidgets.QFrame):
 
 
 class Filters(QtWidgets.QFrame):
+    on_tags_filter_changed = QtCore.Signal(str, str)
+    on_change_search_text = QtCore.Signal(str, str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -86,11 +89,35 @@ class Filters(QtWidgets.QFrame):
         self.__hLayout.addWidget(self.lineEdit_search)
 
         self._set_widget_properties()
+        self._Set_widget_connections()
+
+    @property
+    def current_tag(self):
+        tag = self.cmb_tags.currentText()
+        return tag if tag.strip() != '-' else ''
+
+    @property
+    def search_text(self):
+        return self.lineEdit_search.text()
 
     def _set_widget_properties(self):
         self.cmb_tags.setFixedHeight(26)
         self.lineEdit_search.setFixedHeight(26)
         self.lineEdit_search.setFrame(QtWidgets.QFrame.NoFrame)
 
-    def add_tags(self, tags: list or tuple) -> None:
+    def _Set_widget_connections(self):
+        self.cmb_tags.currentIndexChanged.connect(self._on_change_current_index)
+        self.lineEdit_search.textChanged.connect(self._on_change_current_index)
+
+    def _on_change_current_index(self):
+        self.on_tags_filter_changed.emit(self.current_tag, self.lineEdit_search.text().strip())
+
+    def _on_change_search_text(self):
+        current_text = self.lineEdit_search.text().strip()
+        if current_text:
+            self.on_change_search_text.emit(self.current_tag, self.lineEdit_search.text().strip())
+
+    def add_tags(self, tags: list) -> None:
+        self.cmb_tags.clear()
+        tags.insert(0, '-'.center(10, ' '))
         self.cmb_tags.addItems(tags)

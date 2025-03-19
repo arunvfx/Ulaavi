@@ -66,32 +66,35 @@ class MainUI:
         self.actions_ui.on_settings.connect(self._toggle_settings_widget)
         self.settings.on_close.connect(self.__frame_main.show)
 
-        self.categories.tree.on_create.connect(self.update_group_attributes)
-        self.categories.tree.on_change.connect(self.update_group_attributes)
-        self.categories.tree.on_rename.connect(self.update_on_rename_category)
+        self.categories.tree.on_create.connect(self._update_group_attributes)
+        self.categories.tree.on_change.connect(self._update_group_attributes)
+        self.categories.tree.on_rename.connect(self._update_on_rename_category)
 
-        self.categories.group.on_group_change.connect(self.on_change_group)
-        self.categories.group.on_group_new.connect(self.on_change_group)
-        self.categories.group.on_group_remove.connect(self.update_on_group_remove)
+        self.categories.group.on_group_change.connect(self._on_change_group)
+        self.categories.group.on_group_new.connect(self._on_change_group)
+        self.categories.group.on_group_remove.connect(self._update_on_group_remove)
+
+        self.actions_ui.filters.on_tags_filter_changed.connect(self.thumbnail.reset_attributes)
+        self.thumbnail.on_delete_proxy.connect(self.thumbnail.reset_attributes)
 
     def _toggle_settings_widget(self):
         self.settings.toggle_widget_visibility()
         self.__frame_main.hide()
 
-    def update_group_attributes(self, group_name: str, category: str):
+    def _update_group_attributes(self, group_name: str, category: str):
         self.thumbnail.current_group = group_name
         self.thumbnail.current_category = category if category != "root" else None
         self.thumbnail.reset_attributes()
 
-    def update_on_rename_category(self, group_name, old_category, new_category):
+    def _update_on_rename_category(self, group_name, old_category, new_category):
         self.thumbnail.current_group = group_name
         self.thumbnail.current_category = new_category
 
-    def update_on_group_remove(self, group_removed: str):
+    def _update_on_group_remove(self, group_removed: str):
         self.categories.tree.current_group = self.categories.group.current_group
         self.thumbnail.current_group = self.categories.group.current_group
 
-    def on_change_group(self, group_name: str or None):
+    def _on_change_group(self, group_name: str or None):
         """
         on change current group name
 
@@ -109,6 +112,7 @@ class MainUI:
         self.categories.tree.current_group = group_name
         self.thumbnail.current_group = group_name
         self.thumbnail.reset_attributes()
+
 
     def _update_tree_group_attribute(self, group_name: str):
         """
