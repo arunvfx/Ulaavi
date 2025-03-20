@@ -190,12 +190,6 @@ class PreferencesGroup:
 
         self.verticalLayout.addWidget(self.groupBox_preferences)
 
-        self.retranslateUi(Preferences)
-
-        QMetaObject.connectSlotsByName(Preferences)
-        # setupUi
-
-    def retranslateUi(self, Preferences):
         Preferences.setWindowTitle("Settings")
         self.groupBox_preferences.setTitle("Preferences")
         self.label_resolution.setText("Proxy Resolution")
