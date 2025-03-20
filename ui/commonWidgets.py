@@ -4,6 +4,7 @@ PySide6 libraries. It includes functions for displaying input dialogs and popup 
 """
 # -------------------------------- built-in Modules ----------------------------------
 
+
 # ------------------------------- ThirdParty Modules ---------------------------------
 try:
     from PySide2 import QtWidgets
@@ -14,7 +15,7 @@ except ModuleNotFoundError:
 # -------------------------------- Custom Modules ------------------------------------
 
 
-def get_input_widget(title, label, parent=None):
+def get_input_widget(title: str, label: str, parent=None) -> tuple:
     """
     Displays a text input dialog to get user input.
 
@@ -37,7 +38,7 @@ def get_input_widget(title, label, parent=None):
     return QtWidgets.QInputDialog.getText(parent, title, label, echo=QtWidgets.QLineEdit.Normal)
 
 
-def popup_message(title, content, msgType='message', parent=None):
+def popup_message(title: str, content: str, msgType: str='message', parent=None) -> bool:
     msgType = msgType.lower()
     msgBox = None
 
