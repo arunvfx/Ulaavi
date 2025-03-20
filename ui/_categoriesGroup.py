@@ -1,3 +1,9 @@
+"""
+The CategoriesGroup module provides a custom Qt widget for managing category groups in a user interface.
+ It allows users to add, remove, and switch between groups using a combo box and buttons. The widget emits signals
+ when a group is added, removed, or changed, enabling integration with other parts of the application.
+"""
+
 # -------------------------------- built-in Modules ----------------------------------
 
 # ------------------------------- ThirdParty Modules ---------------------------------
@@ -12,7 +18,15 @@ from . import commonWidgets
 
 class CategoriesGroup(QtWidgets.QFrame):
     """
-    categories group
+    A custom Qt widget for managing category groups.
+
+    This widget provides functionality to add, remove, and switch between category groups.
+    It consists of a combo box to display groups, and buttons to add or remove groups.
+    Signals are emitted when a group is added, removed, or changed.
+
+    :signal on_group_new: Emitted when a new group is added. The signal carries the new group name (str).
+    :signal on_group_change: Emitted when the selected group changes. The signal carries the current group name (str).
+    :signal on_group_remove: Emitted when a group is removed. The signal carries the removed group name (str).
     """
     on_group_new = QtCore.Signal(str)
     on_group_change = QtCore.Signal(str)
@@ -20,7 +34,9 @@ class CategoriesGroup(QtWidgets.QFrame):
 
     def __init__(self) -> None:
         """
-        initialize variables
+        Initializes the CategoriesGroup widget.
+
+        Sets up the layout, widgets, and connections.
         """
         super().__init__()
         self.__layout = QtWidgets.QHBoxLayout(self)
@@ -38,6 +54,11 @@ class CategoriesGroup(QtWidgets.QFrame):
         self._widget_connections()
 
     def _set_widget_properties(self) -> None:
+        """
+        Configures the properties of the widgets.
+
+        Sets text, size, and layout properties for the combo box and buttons.
+        """
         self.btn_add.setText('+')
         self.btn_remove.setText('-')
         self.btn_add.setFixedSize(25, 25)
@@ -49,7 +70,11 @@ class CategoriesGroup(QtWidgets.QFrame):
         self.__layout.setSpacing(1)
 
     def _widget_connections(self):
+        """
+        Connects widget signals to their respective slots.
 
+        Sets up connections for the add, remove, and group change actions.
+        """
         self.btn_add.clicked.connect(self._create_new_group)
         self.btn_remove.clicked.connect(self._remove_group)
         self.cmb_group.currentIndexChanged.connect(
@@ -57,8 +82,10 @@ class CategoriesGroup(QtWidgets.QFrame):
 
     def _create_new_group(self):
         """
-        add category group
-        :return:
+        Creates a new category group.
+
+        Prompts the user to enter a group name using an input dialog.
+        If the user confirms, the new group is added to the combo box and the `on_group_new` signal is emitted.
         """
         group_name, btn_pressed = commonWidgets.get_input_widget(
             'Group Name',
@@ -71,6 +98,12 @@ class CategoriesGroup(QtWidgets.QFrame):
             self.on_group_new.emit(group_name)
 
     def _remove_group(self):
+        """
+        Removes the currently selected group.
+
+        Prompts the user to confirm the removal using a popup message.
+        If confirmed, the group is removed from the combo box and the `on_group_remove` signal is emitted.
+        """
         remove_group: bool = commonWidgets.popup_message(
             'Remove Group',
             f'Are you sure wanna remove the group: {self.current_group} ? ',
@@ -85,20 +118,21 @@ class CategoriesGroup(QtWidgets.QFrame):
     @property
     def current_group(self) -> str:
         """
-        get current group
-        :return: group name
+        Gets the currently selected group name.
+
+        :return: The name of the currently selected group.
         :rtype: str
         """
         return self.cmb_group.currentText()
 
     def add_groups(self, groups: tuple) -> None:
         """
-        add groups to QComboBox.
+        Adds multiple groups to the combo box.
 
-        :param groups: list of groups
+        Clears the existing groups and adds the provided groups in sorted order.
+
+        :param groups: A tuple of group names to add.
         :type groups: tuple
-        :return: None
-        :rtype: None
         """
         self.cmb_group.clear()
         self.cmb_group.addItems(sorted(groups))
