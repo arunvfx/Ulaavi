@@ -1,12 +1,14 @@
 """
-This module provides a custom tree widget (`CategoriesTree`) and tree item (`TreeWidgetItem`) for managing hierarchical categories in a Qt-based application.
+This module provides a custom tree widget (`CategoriesTree`) and tree item (`TreeWidgetItem`) for managing hierarchical
+categories in a Qt-based application.
 
 The `CategoriesTree` widget allows users to:
 - Add, rename, and delete categories.
 - Organize categories into a hierarchical structure (e.g., "root|data|images").
 - Emit signals for category creation, renaming, deletion, and selection changes.
 
-The `TreeWidgetItem` class extends `QTreeWidgetItem` to enforce data integrity when editing categories, ensuring that duplicate categories are not created.
+The `TreeWidgetItem` class extends `QTreeWidgetItem` to enforce data integrity when editing categories, ensuring that
+duplicate categories are not created.
 
 Key Features:
 - **Hierarchical Category Management**: Organize categories into nested structures.
