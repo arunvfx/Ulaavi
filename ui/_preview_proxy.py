@@ -87,7 +87,7 @@ class ProxyPreview(QtWidgets.QWidget):
         self.video_label.setAlignment(QtCore.Qt.AlignCenter)
         self.progress_bar = QtWidgets.QProgressBar()
         self.progress_bar.setValue(0)
-        self.progress_bar.setFixedHeight(5)
+        self.progress_bar.setFixedHeight(3)
         self.progress_bar.setTextVisible(False)
         self.progress_bar.setStyleSheet("QProgressBar::chunk{background-color: #232323;} "
                                         "QProgressBar{border: 0; background-color: transparent;}")
