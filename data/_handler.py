@@ -24,12 +24,13 @@ import json
 import os
 import re
 from abc import abstractmethod, ABC
-from typing import Dict, Optional, List, Union, Generator
+from typing import Dict, Optional, List, Union
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 
 # -------------------------------- Custom Modules ------------------------------------
 import _utilities
+from data import config
 
 
 class JsonHandler(ABC):
@@ -438,7 +439,7 @@ class Preferences:
         :rtype: Dict[str, str]
         """
         return {'proxy': f'{self.__rootPath}/proxy',
-                'data': f'{self.__rootPath}/data.json',
+                'data': f'{self.__rootPath}/{config.DATA_FILE_NAME}',
                 'thread_count': '4',
                 'res_width': '520',
                 'res_height': '300',
