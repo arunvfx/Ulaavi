@@ -104,7 +104,7 @@ class OpSignals(QObject):
     update_status = Signal(str)
     on_load_groups = Signal(tuple)
     on_load_categories = Signal(tuple)
-    on_change_category = Signal(list)
+    on_change_category = Signal(list, object)
     on_load_tags = Signal(list)
     on_open_settings = Signal(dict)
     on_reset_preferences = Signal(dict)
@@ -112,7 +112,7 @@ class OpSignals(QObject):
     on_files_dropped = Signal(tuple)
     on_recache_proxy = Signal(tuple)
     on_render_completed = Signal(dict, str, tuple)
-    on_change_filters = Signal(list)
+    on_change_filters = Signal(list, object)
     on_delete_proxy = Signal()
 
 
@@ -262,7 +262,8 @@ class Operations:
         if category == 'root':
             return
         self.op_signals.on_change_category.emit(
-            self.data.thumbnail_data(group, category, tag=tag, search_string=search_string))
+            self.data.thumbnail_data(
+                group, category, tag=tag, search_string=search_string), _utilities.get_thumbnail_from_proxy)
 
     def on_load_tags(self) -> None:
         """Load tags into the UI by emitting the `on_load_tags` signal."""
@@ -284,7 +285,8 @@ class Operations:
         if category == 'root':
             return
         self.op_signals.on_change_filters.emit(
-            self.data.thumbnail_data(group, category, tag=tag, search_string=search_text))
+            self.data.thumbnail_data(
+                group, category, tag=tag, search_string=search_text), _utilities.get_thumbnail_from_proxy)
 
     def on_create_tag(self, tag: str) -> None:
         """

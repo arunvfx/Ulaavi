@@ -30,7 +30,7 @@ Dependencies:
 # -------------------------------- built-in Modules ----------------------------------
 import math
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Callable, Optional
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 try:
@@ -441,20 +441,22 @@ class ThumbnailUI(QTableWidget):
             self.on_drop_convert_mov.emit(
                 source_file, proxy_file, is_image_seq, self.__last_cell, self.current_group, self.current_category)
 
-        self.disable_cells()
+        self._disable_cells()
 
-    def load_thumbnails(self, thumbnail_list: List[dict]) -> None:
+    def load_thumbnails(self, thumbnail_list: List[dict], get_thumbnail_fn: Callable[[str], str]) -> None:
         """
         Load thumbnails from a list of data.
 
         :param thumbnail_list: List of thumbnail data.
         :type thumbnail_list: list
+        :param get_thumbnail_fn: get thumbnail from proxy file callable function (from _utilities)
+        :type get_thumbnail_fn: Callable
         """
         for data in thumbnail_list:
             self._update_cell_positions(data['source'])
-            self._add_item(data, is_dropped=False)
+            self._add_item(data, is_dropped=False, thumbnail_fn=get_thumbnail_fn)
             QCoreApplication.processEvents()
-        self.disable_cells()
+        self._disable_cells()
 
     def _update_cell_positions(self, dropped_file: list or str) -> None:
         """
@@ -476,7 +478,10 @@ class ThumbnailUI(QTableWidget):
         else:
             self.__last_cell = self.__last_cell[0], self.__last_cell[1] + 1
 
-    def _add_item(self, data: dict or str, is_dropped: bool = False) -> None:
+    def _add_item(self,
+                  data: dict or str,
+                  is_dropped: bool = False,
+                  thumbnail_fn: Optional[Callable] =None) -> None:
         """
         Add an item to the table widget.
 
@@ -486,24 +491,29 @@ class ThumbnailUI(QTableWidget):
         :type is_dropped: bool
         """
         if isinstance(data, dict):
-            source_file = data['source']
-            proxy_file = data['proxy']
+            # on render completed or when loading from json
+            source_file = data.get('source', '')
+            proxy_file = data.get('proxy', '')
         else:
+            # on file drop
             proxy_file = ''
             source_file = data
 
+        if not source_file:
+            return
+
         self._ingest_cell_widget(self.__last_cell, source_file)
-        thumbnail = _thumbnail.Thumbnails(self.cell_width, self.cell_height, is_dropped,
+        thumbnail_widget = _thumbnail.Thumbnails(self.cell_width, self.cell_height, is_dropped,
                                           source_file.endswith(config.SUPPORTED_IMAGE_FORMATS))
-        thumbnail.set_font_size(self.thumbnail_scale)
-        self.setCellWidget(self.__last_cell[0], self.__last_cell[1], thumbnail)
+        thumbnail_widget.set_font_size(self.thumbnail_scale)
+        self.setCellWidget(self.__last_cell[0], self.__last_cell[1], thumbnail_widget)
 
         if not is_dropped:
-            thumbnail_image = proxy_file.replace('.mov', '.png') if proxy_file.endswith('.mov') \
-                else proxy_file
+            thumbnail_image = thumbnail_fn(proxy_file)
+            print(thumbnail_image)
             self.on_render_completed(data, thumbnail_image, cell_position=self.__last_cell)
 
-    def disable_cells(self) -> None:
+    def _disable_cells(self) -> None:
         """"
         Disable empty cells in the table widget.
         """

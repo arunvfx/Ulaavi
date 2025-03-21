@@ -49,6 +49,24 @@ def make_directory(file_path: str) -> None:
         os.makedirs(file_path)
 
 
+def get_thumbnail_from_proxy(proxy_file: str) -> str:
+    """
+    Generates the corresponding thumbnail file path from a given proxy file path.
+
+    This function replaces the proxy file extension with the thumbnail file extension
+    as defined in the configuration. If the input file does not have the proxy file
+    extension, the original file path is returned unchanged.
+
+    :param proxy_file: The file path of the proxy file.
+    :type proxy_file: str
+    :return: The file path of the corresponding thumbnail file. If the input file
+             does not have the proxy file extension, the original file path is returned.
+    :rtype: str
+    """
+    return proxy_file.replace(config.PROXY_FORMAT, config.THUMBNAIL_FORMAT) \
+        if proxy_file.endswith(config.PROXY_FORMAT) else proxy_file
+
+
 def delete_files(files) -> None:
     """
     Deletes the specified files or directories.
@@ -89,14 +107,15 @@ def get_proxy_thumbnail(proxy_file: str):
    Generates the thumbnail file path for a given proxy file.
 
    This function takes a proxy file path and returns the corresponding thumbnail file path.
-   If the proxy file is a `.mov` file, the thumbnail is assumed to be a `.png` file with the same base name.
+   If the proxy file is a config.PROXY_FORMAT(default is `.mov`) file, the thumbnail is assumed to be a
+   config.THUMBNAIL_FORMAT(default is`.png`) file with the same base name.
    Otherwise, the original proxy file path is returned.
 
    :param proxy_file: The path to the proxy file.
    :type proxy_file: str
 
-   :return: The path to the thumbnail file if the proxy file is a `.mov` file; otherwise, the original proxy file path.
-            Returns `None` if `proxy_file` is empty or `None`.
+   :return: The path to the thumbnail file if the proxy file is a config.PROXY_FORMAT(default is `.mov`) file;
+            otherwise, the original proxy file path. Returns `None` if `proxy_file` is empty or `None`.
    :rtype: str or None
 
    :note:
@@ -104,8 +123,8 @@ def get_proxy_thumbnail(proxy_file: str):
        - If `proxy_file` is `None` or an empty string, the function returns `None`.
    """
     if not proxy_file: return
-    return proxy_file.replace('.mov', '.png') if proxy_file.endswith('.mov') \
-        else proxy_file
+    return proxy_file.replace(config.PROXY_FORMAT, config.THUMBNAIL_FORMAT) \
+        if proxy_file.endswith(config.PROXY_FORMAT) else proxy_file
 
 
 def get_dropped_files_with_proxy_path(file_path: str,
@@ -239,10 +258,10 @@ def get_proxy_files_from_source_file(source_file: str,
     proxy_file = f'{proxy_root_path}/{group}/{proxy_file_dirs}/{os.path.basename(os.path.splitext(source_file)[0])}'
 
     if is_image_sequence or source_file.endswith(config.SUPPORTED_VIDEO_FORMATS):
-        proxy_file += '.mov'
+        proxy_file += config.PROXY_FORMAT
 
     elif source_file.endswith(config.SUPPORTED_IMAGE_FORMATS):
-        proxy_file += '.png'
+        proxy_file += config.THUMBNAIL_FORMAT
 
     if not os.path.isfile(proxy_file):
         return proxy_file.replace('\\', '/')

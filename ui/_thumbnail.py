@@ -253,8 +253,6 @@ class Thumbnails(QtWidgets.QFrame):
 
         try:
             self.thumbnail_overlay.hide()
-            if self.__is_input_image:
-                return
         except Exception:
             pass
 
@@ -267,9 +265,5 @@ class Thumbnails(QtWidgets.QFrame):
         """
         try:
             self.thumbnail_overlay.show()
-
-            if self.__is_input_image:
-                return
-
         except Exception:
             pass
