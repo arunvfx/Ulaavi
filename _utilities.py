@@ -57,7 +57,7 @@ def delete_files(files) -> None:
     If a file or directory cannot be deleted, the error is silently ignored.
 
     :param files: A single file/directory path (str) or a list of file/directory paths.
-    :type files: str or list[str]
+    :type files: str or list[str] or set[str]
     """
 
     if isinstance(files, str):
