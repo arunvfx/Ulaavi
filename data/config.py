@@ -2,6 +2,7 @@
 Summary:
 
 Supported Formats.
+Constants
 """
 
 supported_image_formats = (".jpg", ".jpeg", ".tiff", ".tif", ".png", ".tga", ".exr", ".dpx")
