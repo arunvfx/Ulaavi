@@ -221,11 +221,11 @@ class ProxyPreview(QtWidgets.QWidget):
         label_aspect_ratio = self.thumbnail_width / self.thumbnail_height
 
         if image_aspect_ratio >= label_aspect_ratio:
-            # Frame is wider than the label, scale based on width
+            # image is wider than the video_label, scale based on width
             new_width = self.thumbnail_width
             new_height = int(new_width / image_aspect_ratio)
         else:
-            # Frame is taller than the label, scale based on height
+            # image is taller than the video_label, scale based on height
             new_height = self.thumbnail_height
             new_width = int(new_height * image_aspect_ratio)
 
