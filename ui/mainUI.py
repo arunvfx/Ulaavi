@@ -28,7 +28,7 @@ except ModuleNotFoundError:
     from PySide6 import QtWidgets, QtCore
 
 # -------------------------------- Custom Modules ------------------------------------
-from ui import categoriesUI, settingsUI, actionsUI, thumbnailUI, stausbarUI
+from ui import _categoriesUI, _settingsUI, _actionsUI, _thumbnailUI, _stausbarUI
 
 
 class MainUI:
@@ -51,11 +51,11 @@ class MainUI:
         if not mainWidget.objectName():
             mainWidget.setObjectName("Ulaavi")
 
-        self.categories = categoriesUI.Categories()
-        self.actions_ui = actionsUI.ActionsUI()
-        self.thumbnail = thumbnailUI.ThumbnailUI()
-        self.settings = settingsUI.SettingsUI()
-        self.status = stausbarUI.StatusBar()
+        self.categories = _categoriesUI.Categories()
+        self.actions_ui = _actionsUI.ActionsUI()
+        self.thumbnail = _thumbnailUI.ThumbnailUI()
+        self.settings = _settingsUI.SettingsUI()
+        self.status = _stausbarUI.StatusBar()
 
         self.__hLayoutMain = QtWidgets.QHBoxLayout(mainWidget)
         self.__hLayoutMain.setContentsMargins(0, 0, 0, 0)
