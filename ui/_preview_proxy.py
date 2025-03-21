@@ -34,18 +34,19 @@ Methods:
     resize_with_aspect_ratio: Resizes an image while maintaining its aspect ratio.
 """
 
-
 # -------------------------------- built-in Modules ----------------------------------
 import os
 
 # ------------------------------- ThirdParty Modules ---------------------------------
+import cv2
+
 try:
     from PySide2 import QtWidgets, QtMultimediaWidgets, QtMultimedia, QtCore, QtGui
 except ModuleNotFoundError:
     from PySide6 import QtWidgets, QtMultimediaWidgets, QtMultimedia, QtCore, QtGui
 
+
 # -------------------------------- Custom Modules ------------------------------------
-import cv2
 
 
 class ProxyPreview(QtWidgets.QWidget):
@@ -62,6 +63,11 @@ class ProxyPreview(QtWidgets.QWidget):
         proxy_file (str): The path to the video file.
         __total_frames (int): The total number of frames in the video.
     """
+
+    on_enter = QtCore.Signal()
+    on_leave = QtCore.Signal()
+    set_range = QtCore.Signal(int)
+    update_progress_value = QtCore.Signal(int)
 
     def __init__(self, proxy_file: str, thumbnail_width: int, thumbnail_height: int) -> None:
         """
@@ -81,29 +87,22 @@ class ProxyPreview(QtWidgets.QWidget):
 
         self.proxy_file = proxy_file
 
-        self.__vLayout = QtWidgets.QVBoxLayout(self)
+        self.vLayout = QtWidgets.QVBoxLayout(self)
+        self.vLayout.setObjectName('vlayout')
         self.video_label = QtWidgets.QLabel()
         self.video_label.installEventFilter(self)
         self.video_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.progress_bar = QtWidgets.QProgressBar()
-        self.progress_bar.setValue(0)
-        self.progress_bar.setFixedHeight(3)
-        self.progress_bar.setTextVisible(False)
-        self.progress_bar.setStyleSheet("QProgressBar::chunk{background-color: #232323;} "
-                                        "QProgressBar{border: 0; background-color: transparent;}")
-
-        self.__vLayout.addWidget(self.video_label)
-        self.__vLayout.addWidget(self.progress_bar)
+        self.vLayout.addWidget(self.video_label)
         self._set_widget_properties()
 
     def _set_widget_properties(self) -> None:
         """
         Configure widget properties, such as layout margins and geometry.
         """
-        self.__vLayout.setSpacing(0)
+        self.vLayout.setSpacing(0)
         self.video_label.setContentsMargins(0, 0, 0, 0)
-        self.__vLayout.setContentsMargins(0, 0, 0, 0)
-        self.progress_bar.setContentsMargins(0, 0, 0, 0)
+        self.vLayout.setContentsMargins(0, 0, 0, 0)
+        # self.progress_bar.setContentsMargins(0, 0, 0, 0)
         self.setGeometry(0, 0, self.thumbnail_width, self.thumbnail_height)
 
     def eventFilter(self, obj: QtWidgets.QWidget, event: QtCore.QEvent) -> bool:
@@ -118,11 +117,12 @@ class ProxyPreview(QtWidgets.QWidget):
         :rtype: bool
         """
         if event.type() == event.Type.Enter:
+            self.on_enter.emit()
             self.start_video_preview(obj)
 
         elif event.type() == event.Type.Leave:
             self.stop_video_preview(obj)
-            self.progress_bar.setValue(0)
+            self.on_leave.emit()
 
         return super().eventFilter(obj, event)
 
@@ -141,8 +141,10 @@ class ProxyPreview(QtWidgets.QWidget):
             return
 
         self.__total_frames = int(video_label.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        self.set_range.emit(self.__total_frames)
+
         fps = video_label.cap.get(cv2.CAP_PROP_FPS)
-        self.progress_bar.setRange(0, self.__total_frames)
         video_label.timer = QtCore.QTimer()
         video_label.timer.timeout.connect(lambda: self.update_video_frame(video_label))
         video_label.timer.start(round(1000 / fps))
@@ -180,8 +182,6 @@ class ProxyPreview(QtWidgets.QWidget):
         :param video_label: The label used to display the video.
         :type video_label: QtWidgets.QLabel
         """
-        if self.progress_bar.value() == self.__total_frames:
-            self.progress_bar.setValue(0)
 
         ret, frame = video_label.cap.read()
 
@@ -199,7 +199,8 @@ class ProxyPreview(QtWidgets.QWidget):
 
         q_image = QtGui.QImage(frame_rgb.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888)
         video_label.setPixmap(QtGui.QPixmap.fromImage(q_image))
-        self.progress_bar.setValue(self.progress_bar.value() + 1)
+
+        self.update_progress_value.emit(self.__total_frames)
 
     def resize_with_aspect_ratio(self, image, inter=cv2.INTER_AREA):
         """

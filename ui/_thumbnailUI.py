@@ -31,14 +31,15 @@ Dependencies:
 import math
 import os
 from typing import List, Tuple, Callable, Optional
+from functools import partial
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 try:
-    from PySide2.QtWidgets import QTableWidget, QFrame, QMenu, QAction, QTableWidgetItem
+    from PySide2.QtWidgets import QTableWidget, QFrame, QMenu, QAction, QTableWidgetItem, QVBoxLayout, QWidget
     from PySide2.QtCore import Signal, Qt, QMimeData, QThreadPool, QRunnable, QCoreApplication, QPoint
     from PySide2.QtGui import QIcon, QDrag
 except ModuleNotFoundError:
-    from PySide6.QtWidgets import QTableWidget, QFrame, QMenu, QTableWidgetItem
+    from PySide6.QtWidgets import QTableWidget, QFrame, QMenu, QTableWidgetItem, QVBoxLayout, QWidget
     from PySide6.QtCore import Signal, Qt, QMimeData, QThreadPool, QRunnable, QCoreApplication, QPoint
     from PySide6.QtGui import QAction, QIcon, QDrag
 
@@ -46,6 +47,7 @@ except ModuleNotFoundError:
 from . import _thumbnail
 from data import config
 from . import commonWidgets
+from . import _progressbar
 
 
 class ThumbnailUI(QTableWidget):
@@ -132,16 +134,15 @@ class ThumbnailUI(QTableWidget):
         super().__init__(parent=parent)
         self.current_category = None
         self.current_group = None
-        self.__tags = []
+        self.progress_bar = _progressbar.ThumbnailProgressBar()
+        self.thumbnail_scale = 1
         self.cell_width = 0
         self.cell_height = 0
         self.rows = 0
         self.total_columns = 0
-        self.__threadpool = QThreadPool()
-        self.max_thread_count = 4
-        self.thumbnail_scale = 1
         self.overlay_font_size = 10
-
+        self.__tags = []
+        self.__threadpool = QThreadPool()
         self.__total_files = 0
         self.__last_cell = (0, 0)
 
@@ -512,14 +513,22 @@ class ThumbnailUI(QTableWidget):
             return
 
         self._ingest_cell_widget(self.__last_cell, source_file)
-        thumbnail_widget = _thumbnail.Thumbnails(self.cell_width, self.cell_height, is_dropped,
-                                                 source_file.endswith(config.SUPPORTED_IMAGE_FORMATS))
-        thumbnail_widget.set_font_size(self.thumbnail_scale)
+        thumbnail_widget = _thumbnail.Thumbnails(self.cell_width, self.cell_height, is_dropped)
         self.setCellWidget(self.__last_cell[0], self.__last_cell[1], thumbnail_widget)
+
+        if not source_file.endswith(config.SUPPORTED_IMAGE_FORMATS):
+            self._thumbnail_widget_connections(thumbnail_widget)
 
         if not is_dropped:
             thumbnail_image = thumbnail_fn(proxy_file)
             self.on_render_completed(data, thumbnail_image, cell_position=self.__last_cell)
+
+    def _thumbnail_widget_connections(self, thumbnail_widget):
+        thumbnail_widget.video.on_enter.connect(partial(self.progress_bar.add_progress_bar, thumbnail_widget.video))
+        thumbnail_widget.video.on_leave.connect(self.progress_bar.remove_progress_bar)
+        thumbnail_widget.video.set_range.connect(self.progress_bar.set_range)
+        thumbnail_widget.video.update_progress_value.connect(self.progress_bar.update_value)
+        thumbnail_widget.set_font_size(self.thumbnail_scale)
 
     def _disable_cells(self) -> None:
         """"

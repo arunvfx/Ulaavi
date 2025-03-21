@@ -95,8 +95,7 @@ class Thumbnails(QtWidgets.QFrame):
     def __init__(self,
                  thumbnail_width: int,
                  thumbnail_height: int,
-                 is_dropped: bool = False,
-                 is_input_image: bool = False):
+                 is_dropped: bool = False):
         """
         Initialize attributes
 
@@ -106,11 +105,8 @@ class Thumbnails(QtWidgets.QFrame):
         :type thumbnail_height: int
         :param is_dropped: Indicates if the thumbnail is for a dropped item, defaults to False.
         :type is_dropped: bool, optional
-        :param is_input_image: Indicates if the thumbnail is for an input image, defaults to False.
-        :type is_input_image: bool, optional
         """
         super().__init__()
-        self.__is_input_image = is_input_image
 
         self.thumbnail_width = thumbnail_width
         self.thumbnail_height = thumbnail_height
@@ -123,9 +119,6 @@ class Thumbnails(QtWidgets.QFrame):
         self.__vLayout_main.setContentsMargins(3, 3, 3, 3)
 
         self.__stacked_widget = QtWidgets.QStackedWidget()
-
-        if is_input_image:
-            self.video.progress_bar.hide()
 
         self.__vLayout_main.addWidget(self.__stacked_widget)
         self.__stacked_widget.addWidget(self.video)
