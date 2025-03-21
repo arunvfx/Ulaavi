@@ -132,7 +132,7 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         # Backend signals
         self.__ops.op_signals.execute_startup.connect(self.execute_on_startup)
         self.__ops.op_signals.on_files_dropped.connect(self.thumbnail.dropped_data)
-        self.__ops.op_signals.on_recache_proxy.connect(self.thumbnail.dropped_data)
+        self.__ops.op_signals.on_recache_proxy.connect(self.thumbnail.load_thumbnails)
         self.__ops.op_signals.on_load_groups.connect(self.categories.group.add_groups)
         self.__ops.op_signals.on_load_categories.connect(self.categories.tree.add_categories)
         self.__ops.op_signals.on_change_category.connect(self.thumbnail.load_thumbnails)
@@ -144,8 +144,9 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         self.__ops.op_signals.on_load_tags.connect(self.thumbnail.set_tags)
         self.__ops.op_signals.on_load_tags.connect(self.actions_ui.filters.add_tags)
         self.__ops.op_signals.on_change_filters.connect(self.thumbnail.load_thumbnails)
+        self.__ops.op_signals.on_apply_preferences.connect(self.thumbnail.set_max_thread_count)
 
-    def execute_on_startup(self):
+    def execute_on_startup(self) -> None:
         """
         Execute startup operations.
         This method initializes the UI by loading groups, categories, and tags,
@@ -153,7 +154,6 @@ class Ulaavi(QtWidgets.QWidget, mainUI.MainUI):
         """
         self.__ops.ui_add_group()
         self.__ops.ui_add_category(self.categories.group.current_group)
-        self.thumbnail.max_thread_count = int(self.__ops.data.preferences.thread_count)
         self.__ops.update_thumbnail_scale()
         self.__ops.on_load_tags()
 

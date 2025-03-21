@@ -92,6 +92,7 @@ class MainUI:
         self.__hLayout.setContentsMargins(0, 0, 0, 0)
         self.__vLayout.setContentsMargins(0, 0, 0, 0)
         self.__splitter.setContentsMargins(0, 0, 0, 0)
+        self.__leftFrame.setMaximumWidth(350)
 
         self.__hLayoutMain.addWidget(self.__frame_main)
         self.__hLayoutMain.addWidget(self.settings)

@@ -177,7 +177,7 @@ class ConvertMov(QRunnable):
         :param metadata: Video metadata.
         :type metadata: dict
         """
-        thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}.png'
+        thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}{config.THUMBNAIL_FORMAT}'
 
         if not os.path.isfile(self.__output_file):
             command = _commands.convert_video(
@@ -210,7 +210,7 @@ class ConvertMov(QRunnable):
         :type metadata: dict
         """
 
-        thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}.png'
+        thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}{config.THUMBNAIL_FORMAT}'
 
         if not os.path.isfile(self.__output_file):
             command = _commands.convert_image_sequence(
@@ -229,14 +229,14 @@ class ConvertMov(QRunnable):
 
     def _convert_image(self, source_file: str, metadata: dict) -> None:
         """
-        Convert an image file to .png format.
+        Convert an image file to config.THUMBNAIL_FORMAT(default is "png") format.
 
         :param source_file: Path to the source image.
         :type source_file: str
         :param metadata: Image metadata.
         :type metadata: dict
         """
-        thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}.png'
+        thumbnail_image = f'{os.path.splitext(self.__output_file)[0]}{config.THUMBNAIL_FORMAT}'
         if not os.path.isfile(self.__output_file):
             command = _commands.convert_image(
                 source_file, self.__output_file, self.__thumb_resolutionX, self.__thumb_resolutionY)

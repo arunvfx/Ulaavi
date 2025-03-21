@@ -9,3 +9,5 @@ SUPPORTED_IMAGE_FORMATS = (".jpg", ".jpeg", ".tiff", ".tif", ".png", ".tga", ".e
 SUPPORTED_VIDEO_FORMATS = (".mov", ".avi", ".mp4")
 
 DATA_FILE_NAME = 'data.json'
+THUMBNAIL_FORMAT = '.png'
+PROXY_FORMAT = '.mov'

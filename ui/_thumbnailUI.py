@@ -138,7 +138,6 @@ class ThumbnailUI(QTableWidget):
         self.rows = 0
         self.total_columns = 0
         self.__threadpool = QThreadPool()
-        self.__threadpool.setMaxThreadCount(4)
         self.max_thread_count = 4
         self.thumbnail_scale = 1
         self.overlay_font_size = 10
@@ -175,6 +174,15 @@ class ThumbnailUI(QTableWidget):
         self.setFrameShadow(QFrame.Plain)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._context_menu)
+
+    def set_max_thread_count(self, thread_count: int) -> None:
+        """
+        set max thread count of QThreadPool.
+
+        :param thread_count: thread count
+        :type thread_count: int
+        """
+        self.__threadpool.setMaxThreadCount(thread_count)
 
     def reset_attributes(self) -> None:
         """
@@ -266,6 +274,7 @@ class ThumbnailUI(QTableWidget):
         :param event: The mouse move event.
         :type event: QMouseEvent
         """
+
         def get_user_data():
             for item in self.selectedItems():
                 user_data = item.data(Qt.UserRole)
@@ -481,7 +490,7 @@ class ThumbnailUI(QTableWidget):
     def _add_item(self,
                   data: dict or str,
                   is_dropped: bool = False,
-                  thumbnail_fn: Optional[Callable] =None) -> None:
+                  thumbnail_fn: Optional[Callable] = None) -> None:
         """
         Add an item to the table widget.
 
@@ -504,13 +513,12 @@ class ThumbnailUI(QTableWidget):
 
         self._ingest_cell_widget(self.__last_cell, source_file)
         thumbnail_widget = _thumbnail.Thumbnails(self.cell_width, self.cell_height, is_dropped,
-                                          source_file.endswith(config.SUPPORTED_IMAGE_FORMATS))
+                                                 source_file.endswith(config.SUPPORTED_IMAGE_FORMATS))
         thumbnail_widget.set_font_size(self.thumbnail_scale)
         self.setCellWidget(self.__last_cell[0], self.__last_cell[1], thumbnail_widget)
 
         if not is_dropped:
             thumbnail_image = thumbnail_fn(proxy_file)
-            print(thumbnail_image)
             self.on_render_completed(data, thumbnail_image, cell_position=self.__last_cell)
 
     def _disable_cells(self) -> None:

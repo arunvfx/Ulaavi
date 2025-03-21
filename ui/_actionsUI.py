@@ -61,12 +61,12 @@ class ActionsUI(QtWidgets.QWidget):
         super().__init__(parent)
 
         self.__hLayout = QtWidgets.QHBoxLayout(self)
-        self.actions = Actions(self)
+        # self.actions = Actions(self)
         self.filters = Filters(self)
 
         self.btn_settings = QtWidgets.QPushButton()
 
-        self.__hLayout.addWidget(self.actions)
+        # self.__hLayout.addWidget(self.actions)
         self.__hLayout.addWidget(self.filters)
         self.__hLayout.addWidget(self.btn_settings)
 

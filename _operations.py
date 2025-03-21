@@ -37,7 +37,6 @@ try:
 except ModuleNotFoundError:
     from PySide6.QtCore import QObject, Signal, QRunnable
 
-
 # -------------------------------- Custom Modules ------------------------------------
 from data import tool_data
 import _utilities
@@ -71,6 +70,7 @@ class OpSignals(QObject):
         - **on_change_category**: Emitted when the selected category changes.
             - Args:
                 - `data (list)`: A list of thumbnail data for the selected category.
+                - `_utilities.get_thumbnail_from_proxy (object)`: function to get the thumbnail file from proxy file
         - **on_load_tags**: Emitted to load tags into the UI.
             - Args:
                 - `tags (list)`: A list of tag names.
@@ -97,7 +97,11 @@ class OpSignals(QObject):
         - **on_change_filters**: Emitted when filters (tags or search text) are changed.
             - Args:
                 - `data (list)`: A list of filtered thumbnail data.
+                - `_utilities.get_thumbnail_from_proxy (object)`: function to get the thumbnail file from proxy file
         - **on_delete_proxy**: Emitted to delete proxy files.
+        - **on_apply_preferences**: Emitted when filters (tags or search text) are changed.
+            - Args:
+                - `thread_count (int)`: max thread count.
     """
     execute_startup = Signal()
     thumbnail_scale = Signal(int, int, float)
@@ -108,12 +112,13 @@ class OpSignals(QObject):
     on_load_tags = Signal(list)
     on_open_settings = Signal(dict)
     on_reset_preferences = Signal(dict)
-    on_start_conversion = Signal(object)
     on_files_dropped = Signal(tuple)
     on_recache_proxy = Signal(tuple)
+    on_start_conversion = Signal(object)
     on_render_completed = Signal(dict, str, tuple)
     on_change_filters = Signal(list, object)
     on_delete_proxy = Signal()
+    on_apply_preferences = Signal(int)
 
 
 class Operations:
@@ -349,6 +354,7 @@ class Operations:
         self.data.preferences.update(data)
         self.data.refresh()
         self.op_signals.execute_startup.emit()
+        self.op_signals.on_apply_preferences.emit(int(self.data.preferences.thread_count))
         self.op_signals.update_status.emit(f'Settings Panel: Saved Preferences.')
 
     def on_file_drop(self, file_url: str, group: str, category: str) -> None:
@@ -386,6 +392,7 @@ class Operations:
         :param category: The category name.
         :type category: str
         """
+        self.recache = True
         file_url = _utilities.get_source_file_path(file_url)
 
         data = tuple(_utilities.get_dropped_files_with_proxy_path(
@@ -480,6 +487,11 @@ class Operations:
         """
         Handle the completion of proxy file rendering.
 
+        This method is triggered when the rendering of a proxy file is completed. It organizes
+        the rendered file's data (including the proxy file path, source file path, metadata, and tags)
+        and updates the internal data structure. Additionally, it emits signals to notify the UI
+        of the rendering completion and updates the status.
+
         :param proxy_file: The path of the proxy file.
         :type proxy_file: str
         :param proxy_thumbnail: The path of the proxy thumbnail.
@@ -495,8 +507,14 @@ class Operations:
         :param cell_position: The position of the cell in the UI.
         :type cell_position: tuple
         """
+        data = {'proxy': proxy_file, 'source': source_file, 'metadata': metadata, 'tags': []}
 
-        data = self.data.add_proxy_data(source_file, proxy_file, metadata, group, category)
+        if not hasattr(self, 'recache'):
+            print('HAI')
+            self.data.add_proxy_data(data, group, category)
+        else:
+            delattr(self, 'recache')
+
         self.op_signals.on_render_completed.emit(data, proxy_thumbnail, cell_position)
         self.op_signals.update_status.emit(f'Created  Proxy File: {proxy_file}')
 

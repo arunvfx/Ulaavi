@@ -138,26 +138,18 @@ class Data:
             for category in self.__data[group].keys():
                 yield category
 
-    def add_proxy_data(self, source_file: str, proxy_file: str, metadata: Dict, group: str, category: str) -> Dict:
+    def add_proxy_data(self, data: dict, group: str, category: str) -> None:
         """
         Add proxy data to a category in a group.
 
-        :param source_file: Path to the source file.
-        :type source_file: str
-        :param proxy_file: Path to the proxy file.
-        :type proxy_file: str
-        :param metadata: Metadata associated with the thumbnail.
-        :type metadata: Dict
+        :param data: proxy data to update
+        :type data: dict
         :param group: Name of the group.
         :type group: str
         :param category: Name of the category.
         :type category: str
-        :return: The added thumbnail data.
-        :rtype: Dict
         """
-        data = {'proxy': proxy_file, 'source': source_file, 'metadata': metadata, 'tags': []}
         self.data_obj.update_data(group=group, category=category, data=data)
-        return data
 
     def thumbnail_data(self, group: str, category: str, tag: str = None, search_string: str = None) -> list[Dict]:
         """
