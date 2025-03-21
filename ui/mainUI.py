@@ -50,6 +50,7 @@ class MainUI:
         """
         if not mainWidget.objectName():
             mainWidget.setObjectName("Ulaavi")
+            mainWidget.setWindowTitle('Ulaavi-2.0.0')
 
         self.categories = _categoriesUI.Categories()
         self.actions_ui = _actionsUI.ActionsUI()
