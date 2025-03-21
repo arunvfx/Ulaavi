@@ -40,7 +40,7 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
 * Removed support for .nk and mesh files.
 * Removed List view.
 * No backward compatibility with older versions of the tool.
-* Tested in Nuke 15 and Nuke 16.
+* <b>Tested in Nuke 15 and Nuke 16 (Windows)</b>.
 
 ### Usage
 * Launch Ulaavi from the Nuke toolbar or menu.
