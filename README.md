@@ -33,6 +33,9 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
 * Tested and working in Nuke 15 and Nuke 16.
 * <b>No backward compatibility</b> with older versions of Nuke.
 
+### Platforms
+* Tested in Windows (may work in Linux & Mac)
+
 ### What's Changed
 * GIF previews have been replaced with .mov for better quality previews.
 * Added basic and essential metadata preview over thumbnails.
