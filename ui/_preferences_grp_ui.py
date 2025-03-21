@@ -31,6 +31,7 @@ except ModuleNotFoundError:
 
 # -------------------------------- Custom Modules ------------------------------------
 from . import _preferences_grp
+from data import config
 
 
 class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
@@ -123,7 +124,6 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
     def _set_proxy_directory(self) -> None:
         """
         Open a directory dialog to set the proxy directory.
-
         Updates the proxy directory input field with the selected directory.
         """
         directory = self._browse_proxy_directory()
@@ -133,12 +133,11 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
     def _set_json_file_path(self) -> None:
         """
         Open a directory dialog to set the JSON file path.
-
         Updates the JSON file path input field with the selected directory.
         """
         directory = self._browse_proxy_directory()
         if directory:
-            self.lineEdit_json.setText(f'{directory}/data.json')
+            self.lineEdit_json.setText(f'{directory}/{config.DATA_FILE_NAME}')
 
     def _browse_proxy_directory(self) -> str:
         """
