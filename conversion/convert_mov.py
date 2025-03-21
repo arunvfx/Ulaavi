@@ -119,10 +119,10 @@ class ConvertMov(QRunnable):
         if self.is_image_seq:
             self._process_image_sequence()
 
-        elif self.__source_file.endswith(config.supported_image_formats):
+        elif self.__source_file.endswith(config.SUPPORTED_IMAGE_FORMATS):
             self._process_image()
 
-        elif self.__source_file.endswith(config.supported_video_formats):
+        elif self.__source_file.endswith(config.SUPPORTED_VIDEO_FORMATS):
             self._process_video()
 
     def _process_video(self):
