@@ -1,4 +1,25 @@
+"""
+Main User Interface Module
+=========================
+
+This module provides the main user interface for the application, combining various UI components
+such as categories, actions, thumbnails, settings, and a status bar. It is responsible for
+organizing and managing the layout and interactions between these components.
+
+Key Components:
+    - **Categories**: Manages grouping and categorization of items.
+    - **ActionsUI**: Provides action buttons (e.g., settings, filters).
+    - **ThumbnailUI**: Displays thumbnails for items.
+    - **SettingsUI**: Handles application settings.
+    - **StatusBar**: Displays status information.
+
+Usage:
+    - Use the `setupUi` method to initialize and set up the main UI.
+    - Connect signals to handle user interactions and updates across components.
+"""
+
 # -------------------------------- built-in Modules ----------------------------------
+from typing import Optional
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 try:
@@ -11,7 +32,22 @@ from ui import categoriesUI, settingsUI, actionsUI, thumbnailUI, stausbarUI
 
 
 class MainUI:
-    def setupUi(self, mainWidget):
+    """
+    Main user interface class for organizing and managing UI components.
+
+    This class sets up the layout and connections between categories, actions, thumbnails,
+    settings, and the status bar.
+
+    :param mainWidget: The main widget where the UI will be set up.
+    :type mainWidget: QWidget
+    """
+    def setupUi(self, mainWidget: QtWidgets.QWidget):
+        """
+        Set up the main user interface.
+
+        :param mainWidget: The main widget to set up the UI in.
+        :type mainWidget: QWidget
+        """
         if not mainWidget.objectName():
             mainWidget.setObjectName("Ulaavi")
 
@@ -62,7 +98,11 @@ class MainUI:
 
         self._set_widget_connections()
 
-    def _set_widget_connections(self):
+    def _set_widget_connections(self) -> None:
+        """
+        Set up signal connections between UI components.
+        This method connects signals from actions, categories, and settings to their respective slots.
+        """
         self.actions_ui.on_settings.connect(self._toggle_settings_widget)
         self.settings.on_close.connect(self.__frame_main.show)
 
@@ -77,50 +117,64 @@ class MainUI:
         self.actions_ui.filters.on_tags_filter_changed.connect(self.thumbnail.reset_attributes)
         self.thumbnail.on_delete_proxy.connect(self.thumbnail.reset_attributes)
 
-    def _toggle_settings_widget(self):
+    def _toggle_settings_widget(self) -> None:
+        """
+        Toggle the visibility of the settings widget.
+        This method hides the main frame and shows the settings widget.
+        """
         self.settings.toggle_widget_visibility()
         self.__frame_main.hide()
 
-    def _update_group_attributes(self, group_name: str, category: str):
-        self.thumbnail.current_group = group_name
+    def _update_group_attributes(self, group: str, category: str) -> None:
+        """
+        Update group and category attributes in the thumbnail UI.
+
+        :param group: The name of the group.
+        :type group: str
+        :param category: The name of the category.
+        :type category: str
+        """
+        self.thumbnail.current_group = group
         self.thumbnail.current_category = category if category != "root" else None
         self.thumbnail.reset_attributes()
 
-    def _update_on_rename_category(self, group_name, old_category, new_category):
-        self.thumbnail.current_group = group_name
+    def _update_on_rename_category(self, group: str, old_category: str, new_category: str) -> None:
+        """
+        Update the current category when a category is renamed.
+
+        :param group: The name of the group.
+        :type group: str
+        :param old_category: The old name of the category.
+        :type old_category: str
+        :param new_category: The new name of the category.
+        :type new_category: str
+        """
+        self.thumbnail.current_group = group
         self.thumbnail.current_category = new_category
 
-    def _update_on_group_remove(self, group_removed: str):
+    def _update_on_group_remove(self, group: str) -> None:
+        """
+        Update the current group when a group is removed.
+
+        :param group: The name of the removed group.
+        :type group: str
+        """
         self.categories.tree.current_group = self.categories.group.current_group
         self.thumbnail.current_group = self.categories.group.current_group
 
-    def _on_change_group(self, group_name: str or None):
+    def _on_change_group(self, group: Optional[str]) -> None:
         """
-        on change current group name
+        Handle changes to the current group.
 
-        :param group_name: group name
-        :type group_name: str
-        :return: None
-        :rtype: None
+        :param group: The name of the current group.
+        :type group: str or None
         """
-        if not group_name:
+        if not group:
             self.categories.tree.setEnabled(False)
         else:
             self.categories.tree.setEnabled(True)
         self.categories.tree.root_item()
 
-        self.categories.tree.current_group = group_name
-        self.thumbnail.current_group = group_name
+        self.categories.tree.current_group = group
+        self.thumbnail.current_group = group
         self.thumbnail.reset_attributes()
-
-
-    def _update_tree_group_attribute(self, group_name: str):
-        """
-        update current group attribute in treeWidget class.
-
-        :param group_name: group name
-        :type group_name: str
-        :return: None
-        :rtype: NOne
-        """
-        self.tree.current_group = group_name
