@@ -5,7 +5,7 @@ Supported Formats.
 Constants
 """
 
-supported_image_formats = (".jpg", ".jpeg", ".tiff", ".tif", ".png", ".tga", ".exr", ".dpx")
-supported_video_formats = (".mov", ".avi", ".mp4")
+SUPPORTED_IMAGE_FORMATS = (".jpg", ".jpeg", ".tiff", ".tif", ".png", ".tga", ".exr", ".dpx")
+SUPPORTED_VIDEO_FORMATS = (".mov", ".avi", ".mp4")
 
 DATA_FILE_NAME = 'data.json'

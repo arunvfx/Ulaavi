@@ -181,8 +181,8 @@ def get_image_sequence(file_directory: str):
     :ytype: tuple or str
 
     :note:
-        - Supported image and video formats are determined by `config.supported_image_formats`
-          and `config.supported_video_formats`.
+        - Supported image and video formats are determined by `config.SUPPORTED_IMAGE_FORMATS`
+          and `config.SUPPORTED_VIDEO_FORMATS`.
         - The function is case-insensitive on Windows and macOS platforms due to filesystem limitations.
     """
     collections, remainders = clique.assemble(os.listdir(file_directory),
@@ -192,13 +192,13 @@ def get_image_sequence(file_directory: str):
         filename_split = str(collection).split(' [')
         file_name = filename_split[0]
 
-        if file_name.endswith(config.supported_image_formats):
+        if file_name.endswith(config.SUPPORTED_IMAGE_FORMATS):
             yield f'{file_directory}/{file_name}', filename_split[-1][:-1]
 
     for remainder in remainders:
         file_path = f'{file_directory}/{remainder}'
 
-        if file_path.endswith(config.supported_image_formats) or file_path.endswith(config.supported_video_formats):
+        if file_path.endswith(config.SUPPORTED_IMAGE_FORMATS) or file_path.endswith(config.SUPPORTED_VIDEO_FORMATS):
             yield file_path
 
 
@@ -229,8 +229,8 @@ def get_proxy_files_from_source_file(source_file: str,
     :rtype: str
 
     :note:
-        - Supported image formats are determined by `config.supported_image_formats`.
-        - Supported video formats are determined by `config.supported_video_formats`.
+        - Supported image formats are determined by `config.SUPPORTED_IMAGE_FORMATS`.
+        - Supported video formats are determined by `config.SUPPORTED_VIDEO_FORMATS`.
         - If the source file is part of an image sequence or is a video, the proxy file will have a `.mov` extension.
         - If the source file is an image, the proxy file will have a `.png` extension.
     """
@@ -238,10 +238,10 @@ def get_proxy_files_from_source_file(source_file: str,
 
     proxy_file = f'{proxy_root_path}/{group}/{proxy_file_dirs}/{os.path.basename(os.path.splitext(source_file)[0])}'
 
-    if is_image_sequence or source_file.endswith(config.supported_video_formats):
+    if is_image_sequence or source_file.endswith(config.SUPPORTED_VIDEO_FORMATS):
         proxy_file += '.mov'
 
-    elif source_file.endswith(config.supported_image_formats):
+    elif source_file.endswith(config.SUPPORTED_IMAGE_FORMATS):
         proxy_file += '.png'
 
     if not os.path.isfile(proxy_file):

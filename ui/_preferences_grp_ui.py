@@ -124,6 +124,7 @@ class Preferences(_preferences_grp.PreferencesGroup, QtWidgets.QWidget):
     def _set_proxy_directory(self) -> None:
         """
         Open a directory dialog to set the proxy directory.
+
         Updates the proxy directory input field with the selected directory.
         """
         directory = self._browse_proxy_directory()
