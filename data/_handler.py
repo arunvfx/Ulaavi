@@ -187,7 +187,8 @@ class DataJson(JsonHandler):
                 continue
 
             if tag and tag in data['tags']:
-                data['tags'].remove(tag)
+                if data.get('source') in source_files:
+                    data['tags'].remove(tag)
                 items.append(data)
                 continue
 
