@@ -43,7 +43,7 @@ def make_directory(file_path: str) -> None:
         - If the path points to a directory, the directory itself is created.
         - If the directory already exists, no action is taken.
     """
-    if os.path.isfile(file_path):
+    if os.path.isfile(file_path) or len(os.path.splitext(file_path)) == 2:
         file_path = os.path.dirname(file_path)
     if os.path.isdir(file_path) is False:
         os.makedirs(file_path)
