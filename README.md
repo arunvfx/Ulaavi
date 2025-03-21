@@ -1,17 +1,27 @@
-# Ulaavi
-Ulaavi for nuke, helps to keep our stock elements organised.
-<br> 
-# Platforms
-Windows, Mac and Linux.
+# Ulaavi - Stock Footage Loader for Nuke
 
-# Installation
-Downlaod ffmpeg from ffmpeg.org<br>
-linux : https://johnvansickle.com/ffmpeg/ <br>
-windows : https://www.gyan.dev/ffmpeg/builds/
+Ulaavi is a tool designed to help you load, preview, and import stock footage directly inside Nuke. It simplifies the process of working with stock footage by providing an intuitive interface and high-quality previews.
 
-Under settings, set path to downloaded ffmpeg bin directory
+---
 
-https://youtu.be/IrLRP9MQxjo
+## Features
+- Load and preview stock footage directly in Nuke.
+- High-quality `.mov` previews (replaced GIF previews in version 2 for better quality).
+- Seamless integration with Nuke's workflow.
 
-# Preview:
-![image not found](https://github.com/arunvfx/Ulaavi/blob/master/preview.png?raw=true)
+---
+
+## Installation
+
+### Prerequisites
+- **FFmpeg**: Ensure FFmpeg is installed and its directory is added to your system's environment path.
+- **Third-Party Packages**:
+  - `clique==2.0.0`
+  - `opencv-python==4.11.0.86`
+  - `numpy==1.26.4`
+  - `Pyside2` or `PySide6` (depending on your Nuke version).
+
+### Steps
+1. Install the required third-party packages using pip:
+   ```bash
+   pip install clique==2.0.0 opencv-python==4.11.0.86 numpy==1.26.4 Pyside2
