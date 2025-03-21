@@ -24,10 +24,19 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
 ### Steps
 1. Install the required third-party packages using pip:
    ```bash
-   pip install clique==2.0.0 opencv-python==4.11.0.86 numpy==1.26.4 Pyside2
+   pip install clique==2.0.0 opencv-python==4.11.0.86 numpy==1.26.4
    ```
-2. Add the FFmpeg directory to your system's environment path.
-3. Place the Ulaavi tool in your Nuke plugins directory or load it manually in Nuke.
+2. Append Package Path to init.py in the .nuke Folder
+    ```python
+    import sys
+    sys.path.append("PACKAGE_PATH_TO_APPEND")
+    ```
+4. Add the FFmpeg directory to your system's environment path.
+5. Append Ulaavi tool path to init.py in the .nuke Folder.
+     ```python
+     import nuke
+     nuke.pluginAddPath("ULAAVI_TOOL_PATH")
+     ```
 
 ### Compatibility
 * Tested and working in Nuke 15 and Nuke 16.
