@@ -2,7 +2,7 @@
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 import nuke
-from nukescripts import panels
+import nukescripts
 
 # -------------------------------- Custom Modules ------------------------------------
 from main import *
