@@ -1,7 +1,11 @@
-import nuke
-from main import *
-from nukescripts import panels
+# -------------------------------- built-in Modules ----------------------------------
 
+# ------------------------------- ThirdParty Modules ---------------------------------
+import nuke
+import nukescripts
+
+# -------------------------------- Custom Modules ------------------------------------
+from main import *
 
 menu = nuke.menu('Nuke').addMenu('thEdge')
 menu.addCommand('Ulaavi', 'main()')

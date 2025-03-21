@@ -1,0 +1,5 @@
+clique==2.0.0
+opencv-python==4.11.0.86
+numpy==1.26.4
+PySide2>=5.15.2; python_version <= '3.10'
+PySide6>=6.5.3; python_version >= '3.11'
