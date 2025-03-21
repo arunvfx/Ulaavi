@@ -116,7 +116,7 @@ class ConvertMov(QRunnable):
         """
         _utilities.make_directory(self.__output_file)
 
-        if self.is_image_seq:
+        if self.__is_image_seq:
             self._process_image_sequence()
 
         elif self.__source_file.endswith(config.SUPPORTED_IMAGE_FORMATS):
