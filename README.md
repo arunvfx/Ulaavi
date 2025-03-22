@@ -34,8 +34,17 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
     import sys
     sys.path.append("PACKAGE_PATH_TO_APPEND")
     ```
-4. Add the FFmpeg directory to your system's environment path.
-5. Append Ulaavi tool path to init.py in the .nuke Folder.
+3. #### Install FFmpeg - On Windows:
+   * ###### Download FFmpeg:
+      1. Go to the official FFmpeg website: https://ffmpeg.org/download.html.
+      2. Scroll down to the "Windows" section and download the latest static build (e.g., ffmpeg-release-full.7z).
+    * ###### Extract the Files:
+      1. Extract the downloaded .7z file using a tool like 7-Zip.
+      2. Extract the contents to a directory, e.g., C:\ffmpeg.
+    * ###### Add FFmpeg to System Environment Variables:
+      1. Add the FFmpeg bin directory inside the extracted FFmpeg directory to your system's environment (e.g., C:\ffmpeg\bin).
+         
+4. Append Ulaavi tool path to init.py in the .nuke Folder.
      ```python
      import nuke
      nuke.pluginAddPath("ULAAVI_TOOL_PATH")
