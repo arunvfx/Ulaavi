@@ -15,6 +15,7 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
 ---
 
 ## Installation
+  * ##### Watch [Installation Video](https://youtu.be/M5M2ICKZvFA?si=3LDhFf0OoiUytR5N) 
 
 ### Prerequisites
 - **FFmpeg**: Ensure FFmpeg is installed and its directory is added to your system's environment path.
