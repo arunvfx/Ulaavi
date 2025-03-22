@@ -29,12 +29,16 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
    ```bash
    pip install clique==2.0.0 opencv-python==4.11.0.86 numpy==1.26.4
    ```
-2. Append Package Path to init.py in the .nuke Folder
+   or to install in a specific path
+   ```bash
+   pip install --target <TARGET_PATH_TO_INSTALL> clique==2.0.0 opencv-python==4.11.0.86 numpy==1.26.4
+   ```
+3. Append Package Path to init.py in the .nuke Folder
     ```python
     import sys
     sys.path.append("PACKAGE_PATH_TO_APPEND")
     ```
-3. #### Install FFmpeg - On Windows:
+4. #### Install FFmpeg - On Windows:
    * ###### Download FFmpeg:
       1. Go to the official FFmpeg website: https://ffmpeg.org/download.html.
       2. Scroll down to the "Windows" section and download the latest static build (e.g., ffmpeg-release-full.7z).
@@ -44,7 +48,7 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
     * ###### Add FFmpeg to System Environment Variables:
       1. Add the FFmpeg bin directory inside the extracted FFmpeg directory to your system's environment (e.g., C:\ffmpeg\bin).
          
-4. Append Ulaavi tool path to init.py in the .nuke Folder.
+5. Append Ulaavi tool path to init.py in the .nuke Folder.
      ```python
      import nuke
      nuke.pluginAddPath("ULAAVI_TOOL_PATH")
