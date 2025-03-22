@@ -510,7 +510,6 @@ class Operations:
         data = {'proxy': proxy_file, 'source': source_file, 'metadata': metadata, 'tags': []}
 
         if not hasattr(self, 'recache'):
-            print('HAI')
             self.data.add_proxy_data(data, group, category)
         else:
             delattr(self, 'recache')
