@@ -69,7 +69,3 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
 
 ### License
 Ulaavi is provided under the MIT License.
-```markdown
-This updated `README.md` now includes the "What's Changed" section, highlighting the key updates and changes in the latest version of Ulaavi.
-Let me know if you need further adjustments!
-```
