@@ -25,7 +25,17 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
   - `Pyside2` or `PySide6` (depending on your Nuke version).
 
 ### Steps
-1. Install the required third-party packages using pip:
+1. #### Install FFmpeg - On Windows:
+   * ###### Download FFmpeg:
+      1. Go to the official FFmpeg website: https://ffmpeg.org/download.html.
+      2. Scroll down to the "Windows" section and download the latest static build (e.g., ffmpeg-release-full.7z).
+    * ###### Extract the Files:
+      1. Extract the downloaded .7z file using a tool like 7-Zip.
+      2. Extract the contents to a directory, e.g., C:\ffmpeg.
+    * ###### Add FFmpeg to System Environment Variables:
+      1. Add the FFmpeg bin directory inside the extracted FFmpeg directory to your system's environment (e.g., C:\ffmpeg\bin).
+         
+2. Install the required third-party packages using pip:
    ```bash
    pip install clique==2.0.0 opencv-python==4.11.0.86 numpy==1.26.4
    ```
@@ -38,17 +48,7 @@ Ulaavi is a tool designed to help you load, preview, and import stock footage di
     import sys
     sys.path.append("PACKAGE_PATH_TO_APPEND")
     ```
-4. #### Install FFmpeg - On Windows:
-   * ###### Download FFmpeg:
-      1. Go to the official FFmpeg website: https://ffmpeg.org/download.html.
-      2. Scroll down to the "Windows" section and download the latest static build (e.g., ffmpeg-release-full.7z).
-    * ###### Extract the Files:
-      1. Extract the downloaded .7z file using a tool like 7-Zip.
-      2. Extract the contents to a directory, e.g., C:\ffmpeg.
-    * ###### Add FFmpeg to System Environment Variables:
-      1. Add the FFmpeg bin directory inside the extracted FFmpeg directory to your system's environment (e.g., C:\ffmpeg\bin).
-         
-5. Append Ulaavi tool path to init.py in the .nuke Folder.
+4. Append Ulaavi tool path to init.py in the .nuke Folder.
      ```python
      import nuke
      nuke.pluginAddPath("ULAAVI_TOOL_PATH")
