@@ -49,7 +49,7 @@ def convert_image_sequence(source_file: str,
                            output_file: str,
                            resolutionX: int,
                            resolutionY: int,
-                           start_frame: int,
+                           start_frame: str,
                            fps: float = 24) -> list:
     """
     Generates a ffmpeg command to convert an image sequence to `.mov` format.
@@ -164,7 +164,7 @@ def extract_image_from_video(source_file: str,
             "-i",
             source_file,
             "-pix_fmt",
-            "yuvj420p",
+            "yuv420p",
             "-frames",
             "1",
             "-vf",
