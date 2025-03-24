@@ -151,7 +151,7 @@ class Data:
         """
         self.data_obj.update_data(group=group, category=category, data=data)
 
-    def thumbnail_data(self, group: str, category: str, tag: str = None, search_string: str = None) -> list[Dict]:
+    def thumbnail_data(self, group: str, category: str, tag: str = None, search_string: str = None) -> List[Dict]:
         """
         Get thumbnail data for a category, optionally filtered by tag or search string.
 

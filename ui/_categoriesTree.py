@@ -28,7 +28,7 @@ Example Use Cases:
 
 # -------------------------------- built-in Modules ----------------------------------
 import re
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 # ------------------------------- ThirdParty Modules ---------------------------------
 try:
@@ -280,7 +280,7 @@ class CategoriesTree(QtWidgets.QTreeWidget):
             self.on_change.emit(self.current_group, self.item_user_role)
 
     def is_category_item_exists(self, category: str, tree_item_string: str) \
-            -> tuple[bool, Optional[QtWidgets.QTreeWidgetItem]]:
+            -> Tuple[bool, Optional[QtWidgets.QTreeWidgetItem]]:
         """
         Check if a category already exists in the tree.
 
