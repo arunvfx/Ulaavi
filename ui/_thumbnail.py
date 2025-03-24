@@ -243,11 +243,7 @@ class Thumbnails(QtWidgets.QFrame):
         :param event: The enter event.
         :type event: QEvent
         """
-
-        try:
-            self.thumbnail_overlay.hide()
-        except Exception:
-            pass
+        self.thumbnail_overlay.hide()
 
     def leaveEvent(self, event: QtCore.QEvent) -> None:
         """
@@ -256,7 +252,4 @@ class Thumbnails(QtWidgets.QFrame):
         :param event: The leave event.
         :type event: QEvent
         """
-        try:
-            self.thumbnail_overlay.show()
-        except Exception:
-            pass
+        self.thumbnail_overlay.show()

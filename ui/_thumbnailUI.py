@@ -518,6 +518,7 @@ class ThumbnailUI(QTableWidget):
 
         if not source_file.endswith(config.SUPPORTED_IMAGE_FORMATS):
             self._thumbnail_widget_connections(thumbnail_widget)
+        thumbnail_widget.set_font_size(self.thumbnail_scale)
 
         if not is_dropped:
             thumbnail_image = thumbnail_fn(proxy_file)
@@ -528,7 +529,6 @@ class ThumbnailUI(QTableWidget):
         thumbnail_widget.video.on_leave.connect(self.progress_bar.remove_progress_bar)
         thumbnail_widget.video.set_range.connect(self.progress_bar.set_range)
         thumbnail_widget.video.update_progress_value.connect(self.progress_bar.update_value)
-        thumbnail_widget.set_font_size(self.thumbnail_scale)
 
     def _disable_cells(self) -> None:
         """"
